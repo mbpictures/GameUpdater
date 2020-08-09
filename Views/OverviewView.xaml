@@ -1,0 +1,12 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="GameUpdater.Views.OverviewView">
+    
+    <Grid RowDefinitions="*" ColumnDefinitions="*">
+        <Image Grid.Row="0" Grid.Column="0" Source="/Assets/LauncherWallpaper.jpg"></Image>
+        <TextBlock Grid.Row="0" Grid.Column="0" Text="GameLauncher" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="40" FontFamily="Roboto"></TextBlock>
+    </Grid>
+</UserControl>

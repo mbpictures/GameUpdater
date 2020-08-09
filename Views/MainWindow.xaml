@@ -7,6 +7,9 @@
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="GameUpdater.Views.MainWindow"
         Icon="/Assets/avalonia-logo.ico"
-        Content="{Binding Content}"
         Title="GameUpdater">
+        <DockPanel>
+                <ContentControl DockPanel.Dock="Bottom" Content="{Binding Content}" />
+                <views:OverviewView />
+        </DockPanel>
 </Window>
