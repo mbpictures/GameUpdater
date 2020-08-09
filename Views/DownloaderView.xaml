@@ -5,7 +5,10 @@
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="50"
              x:Class="GameUpdater.Views.DownloaderView">
     <StackPanel>
-        <TextBlock Text="{Binding PatchInfo}"/>
-        <ProgressBar Value="{Binding Progress}" />
+        <TextBlock Text="{Binding PatchInfo}" HorizontalAlignment="Center"/>
+        <Grid Margin="5">
+            <ProgressBar Grid.Row="0" Grid.Column="0" Value="{Binding Progress}" />
+            <TextBlock Grid.Row="0" Grid.Column="0" Text="{Binding ProgressText}" HorizontalAlignment="Center"></TextBlock>
+        </Grid>
     </StackPanel>
 </UserControl>

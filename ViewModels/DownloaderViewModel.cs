@@ -21,6 +21,7 @@ namespace GameUpdater.ViewModels
         private void _onProgressChanged(object sender, int progress)
         {
             Progress = progress;
+            ProgressText = $"{progress}%";
         }
 
         private int _progress;
@@ -28,6 +29,13 @@ namespace GameUpdater.ViewModels
         {
             get => _progress;
             set => this.RaiseAndSetIfChanged(ref _progress, value);
+        }
+
+        private string _progressText;
+        public string ProgressText
+        {
+            get => _progressText;
+            set => this.RaiseAndSetIfChanged(ref _progressText, value);
         }
         
         private string _patchInfo;
