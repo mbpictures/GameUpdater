@@ -6,12 +6,10 @@ namespace GameUpdater.ViewModels
 {
     public class DownloaderViewModel : ViewModelBase
     {
-        public DownloaderViewModel()
+        public DownloaderViewModel(Updater updater)
         {
-            Updater dwnl = new Updater("./update.xml", "http://projects.marius-butz.de/updater/update.xml");
-            dwnl.OnPatchProgress += _onProgressChanged;
-            dwnl.OnPatchChanged += _onPatchChanged;
-            dwnl.StartDownload();
+            updater.OnPatchProgress += _onProgressChanged;
+            updater.OnPatchChanged += _onPatchChanged;
             Progress = 0;
         }
 

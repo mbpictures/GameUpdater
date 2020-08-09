@@ -8,7 +8,15 @@ namespace GameUpdater.ViewModels
     {
         public MainWindowViewModel()
         {
-            Content = new DownloaderViewModel();
+            Updater dwnl = new Updater("./update.xml", "http://projects.marius-butz.de/updater/update.xml");
+            Content = new DownloaderViewModel(dwnl);
+            dwnl.OnPatchFinished += _onPatchFinished;
+            dwnl.StartDownload();
+        }
+
+        private void _onPatchFinished(object sender)
+        {
+            Content = new StartGameViewModel();
         }
 
         private ViewModelBase _content;
