@@ -56,7 +56,7 @@ namespace GameUpdater.Services
 
         private void workerDoWork(object sender, DoWorkEventArgs e)
         {
-            while (_files.Count > 0)
+            while (_files.Count > 0 || _downloading)
             {
                 if (_worker.CancellationPending)
                 {
@@ -65,8 +65,8 @@ namespace GameUpdater.Services
                     return;
                 }
 
-                if (_downloading) continue;
-                downloadNextFile();
+                if (!_downloading)
+                    downloadNextFile();
             }
         }
         
@@ -118,7 +118,6 @@ namespace GameUpdater.Services
         {
             _totalDownloadedAmount += downloadedAmount;
             _downloading = false;
-            //downloadNextFile();
         }
     }
 }
