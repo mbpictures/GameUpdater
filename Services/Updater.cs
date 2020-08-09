@@ -6,16 +6,16 @@ namespace GameUpdater.Services
 {
     public class Updater
     {
-        private string _localManifest;
-        private string _remoteManifest;
+        private readonly string _localManifest;
+        private readonly string _remoteManifest;
 
         private XmlDocument _xmlLocal;
         private XmlDocument _xmlRemote;
 
         private Stack<Patch> _cachedPatches;
-        private int amountPatches;
-        private int currentPatchIndex = 1;
-        private Patch currentPatch = null;
+        private int _amountPatches;
+        private int _currentPatchIndex = 1;
+        private Patch _currentPatch;
         
         public delegate void PatchProgressHandler(object sender, int progress);
         public delegate void PatchChangedHandler(object sender, int currentPatch, int amountPatches);
@@ -39,10 +39,7 @@ namespace GameUpdater.Services
             }
         }
 
-        public string LocalVersion
-        {
-            get { return GetVersionOfNode(XmlLocal.SelectSingleNode("updater")); }
-        }
+        public string LocalVersion => GetVersionOfNode(XmlLocal.SelectSingleNode("updater"));
 
         public XmlDocument XmlRemote
         {
@@ -67,8 +64,8 @@ namespace GameUpdater.Services
         public void StartDownload()
         {
             _cachedPatches = GetPatches();
-            amountPatches = _cachedPatches.Count;
-            currentPatchIndex = 1;
+            _amountPatches = _cachedPatches.Count;
+            _currentPatchIndex = 1;
             _downloadNextPatch();
         }
 
@@ -79,9 +76,9 @@ namespace GameUpdater.Services
                 OnPatchFinished?.Invoke(this);
                 return;
             }
-            OnPatchChanged?.Invoke(this, currentPatchIndex, amountPatches);
-            currentPatch = _cachedPatches.Pop();
-            Downloader downloader = new Downloader(currentPatch.Files, 0);
+            OnPatchChanged?.Invoke(this, _currentPatchIndex, _amountPatches);
+            _currentPatch = _cachedPatches.Pop();
+            Downloader downloader = new Downloader(_currentPatch.Files, 0);
             downloader.OnDownloadComplete += _downloadPatchComplete;
             downloader.OnProgressChanged += _downloadPatchProgress;
             downloader.StartDownload();
@@ -89,9 +86,9 @@ namespace GameUpdater.Services
 
         private void _downloadPatchComplete(object sender)
         {
-            currentPatchIndex++;
+            _currentPatchIndex++;
             OnPatchProgress?.Invoke(this, 0);
-            XmlLocal.SelectSingleNode("/updater/version").InnerText = currentPatch.Version;
+            XmlLocal.SelectSingleNode("/updater/version").InnerText = _currentPatch.Version;
             XmlLocal.Save(_localManifest);
             _downloadNextPatch();
         }
@@ -116,12 +113,12 @@ namespace GameUpdater.Services
             
             Stack<Patch> stack = new Stack<Patch>();
 
-            Patch currentPatch = GetNewestPatch();
+            Patch lCurrentPatch = GetNewestPatch();
 
-            while (currentPatch != null && !PatchIsResolved(currentPatch))
+            while (lCurrentPatch != null && !PatchIsResolved(lCurrentPatch))
             {
-                stack.Push(currentPatch);
-                currentPatch = FindPatch(currentPatch?.DependsOn);
+                stack.Push(lCurrentPatch);
+                lCurrentPatch = FindPatch(lCurrentPatch?.DependsOn);
             }
             
             return stack;
@@ -131,24 +128,22 @@ namespace GameUpdater.Services
         {
             XmlNode newestPatch = null;
             var patches = XmlRemote.GetElementsByTagName("patch");
-            for (int i = 0; i < patches.Count; i++)
+            for (var i = 0; i < patches.Count; i++)
             {
-                XmlNode node = patches[i];
-                string version = GetVersionOfNode(node);
+                var node = patches[i];
+                var version = GetVersionOfNode(node);
                 newestPatch = GetHighestVersionNumber(version, GetVersionOfNode(newestPatch)) == version ? node : newestPatch;
             }
 
-            if (newestPatch == null) return null;
-
-            return Patch.ParseXmlNode(newestPatch);
+            return newestPatch == null ? null : Patch.ParseXmlNode(newestPatch);
         }
 
         public Patch FindPatch(string version)
         {
             var patches = XmlRemote.GetElementsByTagName("patch");
-            for (int i = 0; i < patches.Count; i++)
+            for (var i = 0; i < patches.Count; i++)
             {
-                XmlNode node = patches[i];
+                var node = patches[i];
                 if (version == GetVersionOfNode(node)) return Patch.ParseXmlNode(node);
             }
 
