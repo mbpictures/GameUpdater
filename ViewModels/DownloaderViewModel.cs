@@ -8,16 +8,19 @@ namespace GameUpdater.ViewModels
     {
         public DownloaderViewModel()
         {
-            Queue<DownloadFile> queue = new Queue<DownloadFile>();
-            queue.Enqueue(new DownloadFile("https://file-examples-com.github.io/uploads/2017/04/file_example_MP4_1280_10MG.mp4", "test/test.mp4"));
-            queue.Enqueue(new DownloadFile("https://file-examples-com.github.io/uploads/2017/04/file_example_MP4_1920_18MG.mp4", "test/test2.mp4"));
-            Downloader dwnl = new Downloader(queue, 200);
+            Updater dwnl = new Updater("./update.xml", "http://projects.marius-butz.de/updater/update.xml");
+            dwnl.OnPatchProgress += _onProgressChanged;
+            dwnl.OnPatchChanged += _onPatchChanged;
             dwnl.StartDownload();
-            dwnl.OnProgressChanged += DwnlOnOnProgressChanged;
             Progress = 0;
         }
 
-        private void DwnlOnOnProgressChanged(object sender, int progress)
+        private void _onPatchChanged(object sender, int currentPatch, int amountPatches)
+        {
+            PatchInfo = $"Downloading Patch {currentPatch}/{amountPatches}";
+        }
+
+        private void _onProgressChanged(object sender, int progress)
         {
             Progress = progress;
         }
@@ -27,6 +30,13 @@ namespace GameUpdater.ViewModels
         {
             get => _progress;
             set => this.RaiseAndSetIfChanged(ref _progress, value);
+        }
+        
+        private string _patchInfo;
+        public string PatchInfo
+        {
+            get => _patchInfo;
+            set => this.RaiseAndSetIfChanged(ref _patchInfo, value);
         }
         
         

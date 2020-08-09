@@ -5,7 +5,7 @@
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="50"
              x:Class="GameUpdater.Views.DownloaderView">
     <StackPanel>
-        <TextBlock Text="Downloading Version v1.0.1..."/>
+        <TextBlock Text="{Binding PatchInfo}"/>
         <ProgressBar Value="{Binding Progress}" />
     </StackPanel>
 </UserControl>
