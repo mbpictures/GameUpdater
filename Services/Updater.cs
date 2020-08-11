@@ -16,6 +16,7 @@ namespace GameUpdater.Services
         private int _amountPatches;
         private int _currentPatchIndex = 1;
         private Patch _currentPatch;
+        private bool _fileChecking;
         
         public delegate void PatchProgressHandler(object sender, int progress);
         public delegate void PatchChangedHandler(object sender, int currentPatch, int amountPatches);
@@ -61,15 +62,16 @@ namespace GameUpdater.Services
             _remoteManifest = remoteManifest;
         }
 
-        public void StartDownload()
+        public void StartDownload(bool fileChecking = true)
         {
             _cachedPatches = GetPatches();
             _amountPatches = _cachedPatches.Count;
             _currentPatchIndex = 1;
+            _fileChecking = fileChecking;
             _downloadNextPatch();
         }
 
-        private void _downloadNextPatch()
+        private void _downloadNextPatch(bool redownloadPatch = false)
         {
             if (_cachedPatches.Count <= 0)
             {
@@ -77,7 +79,8 @@ namespace GameUpdater.Services
                 return;
             }
             OnPatchChanged?.Invoke(this, _currentPatchIndex, _amountPatches);
-            _currentPatch = _cachedPatches.Pop();
+            if(!(redownloadPatch && _fileChecking))
+                _currentPatch = _cachedPatches.Pop();
             Downloader downloader = new Downloader(_currentPatch.Files, 0);
             downloader.OnDownloadComplete += _downloadPatchComplete;
             downloader.OnProgressChanged += _downloadPatchProgress;
@@ -86,11 +89,25 @@ namespace GameUpdater.Services
 
         private void _downloadPatchComplete(object sender)
         {
-            _currentPatchIndex++;
+            var patchVerified = true;
+            if (_fileChecking)
+            {
+                var queue = new Queue<Patch>();
+                queue.Enqueue(FindPatch(_currentPatch.Version));
+                var fc = new FileChecker(queue);
+                var corruptedFiles = fc.GetCorruptedFiles();
+                patchVerified = corruptedFiles.Count == 0;
+                _currentPatch.Files = new Queue<DownloadFile>(corruptedFiles);
+            }
+
+            if (patchVerified)
+            {
+                _currentPatchIndex++;
+                XmlLocal.SelectSingleNode("/updater/version").InnerText = _currentPatch.Version;
+                XmlLocal.Save(_localManifest);
+            }
             OnPatchProgress?.Invoke(this, 0);
-            XmlLocal.SelectSingleNode("/updater/version").InnerText = _currentPatch.Version;
-            XmlLocal.Save(_localManifest);
-            _downloadNextPatch();
+            _downloadNextPatch(!patchVerified);
         }
 
         private void _downloadPatchProgress(object sender, int progress)
@@ -175,11 +192,21 @@ namespace GameUpdater.Services
 
             public static Patch ParseXmlNode(XmlNode node)
             {
-                var patch = new Patch {Version = GetVersionOfNode(node), Files = new Queue<DownloadFile>(), DependsOn = node.SelectSingleNode("dependsOn").InnerText};
+                var patch = new Patch
+                {
+                    Version = GetVersionOfNode(node),
+                    Files = new Queue<DownloadFile>(),
+                    DependsOn = node.SelectSingleNode("dependsOn").InnerText
+                };
 
                 foreach (XmlNode file in node.SelectSingleNode("files").SelectNodes("file"))
                 {
-                    patch.Files.Enqueue(new DownloadFile(file.SelectSingleNode("url").InnerText, file.SelectSingleNode("location").InnerText));
+                    var checksum = file.SelectSingleNode("checksum");
+                    patch.Files.Enqueue(new DownloadFile(
+                        file.SelectSingleNode("url").InnerText,
+                        file.SelectSingleNode("location").InnerText,
+                        checksum.SelectSingleNode("md5")?.InnerText,
+                        checksum.SelectSingleNode("sha1")?.InnerText));
                 }
 
                 return patch;

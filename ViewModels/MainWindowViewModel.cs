@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using GameUpdater.Services;
 using ReactiveUI;
 
@@ -11,7 +11,7 @@ namespace GameUpdater.ViewModels
             Updater dwnl = new Updater("./update.xml", "http://projects.marius-butz.de/updater/update.xml");
             Content = new DownloaderViewModel(dwnl);
             dwnl.OnPatchFinished += _onPatchFinished;
-            dwnl.StartDownload();
+            dwnl.StartDownload(true);
         }
 
         private void _onPatchFinished(object sender)
