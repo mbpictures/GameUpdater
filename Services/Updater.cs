@@ -81,7 +81,7 @@ namespace GameUpdater.Services
             OnPatchChanged?.Invoke(this, _currentPatchIndex, _amountPatches);
             if(!(redownloadPatch && _fileChecking))
                 _currentPatch = _cachedPatches.Pop();
-            Downloader downloader = new Downloader(_currentPatch.Files, 0);
+            var downloader = new Downloader(_currentPatch.Files, 0);
             downloader.OnDownloadComplete += _downloadPatchComplete;
             downloader.OnProgressChanged += _downloadPatchProgress;
             downloader.StartDownload();
@@ -120,7 +120,7 @@ namespace GameUpdater.Services
          */
         public bool CheckUpdates()
         {
-            Patch newestPatch = GetNewestPatch();
+            var newestPatch = GetNewestPatch();
             return GetHighestVersionNumber(LocalVersion, newestPatch.Version) != LocalVersion;
         }
 
@@ -128,9 +128,9 @@ namespace GameUpdater.Services
         {
             if (!CheckUpdates()) return new Stack<Patch>();
             
-            Stack<Patch> stack = new Stack<Patch>();
+            var stack = new Stack<Patch>();
 
-            Patch lCurrentPatch = GetNewestPatch();
+            var lCurrentPatch = GetNewestPatch();
 
             while (lCurrentPatch != null && !PatchIsResolved(lCurrentPatch))
             {
