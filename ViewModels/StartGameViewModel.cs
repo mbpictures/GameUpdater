@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using GameUpdater.Services;
 
 namespace GameUpdater.ViewModels
 {
@@ -7,7 +8,7 @@ namespace GameUpdater.ViewModels
 
         public void StartGame()
         {
-            Process.Start("notepad.exe");
+            Process.Start(new IniParser().Read("GameExe", "General"));
         }
     }
 }
