@@ -6,7 +6,7 @@ using System.Text;
 // Change this to match your program's normal namespace
 namespace GameUpdater.Services
 {
-    class IniParser // revision 11
+    class IniLoader // revision 11
     {
         readonly string _path;
         private readonly string _exe = Assembly.GetExecutingAssembly().GetName().Name;
@@ -18,9 +18,21 @@ namespace GameUpdater.Services
         private static extern int GetPrivateProfileString(string Section, string Key, string Default,
             StringBuilder RetVal, int Size, string FilePath);
 
-        public IniParser(string iniPath = null)
+        private static IniLoader _instance;
+
+        public static IniLoader Instance
         {
-            _path = new FileInfo(iniPath ?? _exe + ".ini").FullName;
+            get
+            {
+                if(_instance == null)
+                    _instance = new IniLoader();
+                return _instance;
+            }
+        }
+
+        private IniLoader()
+        {
+            _path = new FileInfo(_exe + ".ini").FullName;
         }
 
         public string Read(string key, string section = null)

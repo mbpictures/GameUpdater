@@ -8,7 +8,7 @@ namespace GameUpdater.ViewModels
 
         public void StartGame()
         {
-            Process.Start(new IniParser().Read("GameExe", "General"));
+            Process.Start(IniLoader.Instance.Read("GameExe", "General"));
         }
     }
 }
