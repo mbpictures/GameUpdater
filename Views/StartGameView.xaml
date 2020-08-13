@@ -4,5 +4,5 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="GameUpdater.Views.StartGameView">
-    <Button Command="{Binding StartGame}" Content="Start Game" BorderThickness="0" />
+    <Button Command="{Binding StartGame}" Content="Start Game" BorderThickness="0" MinHeight="50" FontSize="35" />
 </UserControl>
