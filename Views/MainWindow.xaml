@@ -8,8 +8,14 @@
         x:Class="GameUpdater.Views.MainWindow"
         Icon="/Assets/avalonia-logo.ico"
         Title="GameUpdater">
-        <DockPanel>
-                <ContentControl DockPanel.Dock="Bottom" Content="{Binding Content}" />
-                <views:OverviewView />
-        </DockPanel>
+        <Grid>
+                <DockPanel>
+                        <ContentControl DockPanel.Dock="Bottom" Content="{Binding Content}" />
+                        <ContentControl DockPanel.Dock="Bottom" Content="{Binding BottomBar}" />
+                        <views:OverviewView />
+                </DockPanel>
+                <Border IsVisible="{Binding PopupOpen}" Background="#55000000">
+                        <ContentControl DockPanel.Dock="Bottom" Content="{Binding PopupContent}" />
+                </Border>
+        </Grid>
 </Window>

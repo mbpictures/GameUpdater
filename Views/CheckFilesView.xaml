@@ -1,0 +1,17 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="GameUpdater.Views.CheckFilesView">
+        <Border Background="#FFFFFFFF" HorizontalAlignment="Center" VerticalAlignment="Center">
+            <StackPanel Orientation="Vertical" Margin="20">
+                <TextBlock Margin="5" Text="Checking Files..." HorizontalAlignment="Center" Foreground="#FF000000" FontSize="30" />
+                <Grid>
+                    <ProgressBar Value="50" />
+                    <TextBlock Text="50%" HorizontalAlignment="Center"></TextBlock>
+                </Grid>
+                <TextBlock Text="Checking abc..." HorizontalAlignment="Left" Foreground="#FF000000" />
+            </StackPanel>
+        </Border>
+</UserControl>
