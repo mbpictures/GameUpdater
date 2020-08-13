@@ -8,7 +8,9 @@ namespace GameUpdater.ViewModels
     {
         public MainWindowViewModel()
         {
-            Updater dwnl = new Updater("./update.xml", "http://projects.marius-butz.de/updater/update.xml");
+            Updater dwnl = new Updater(
+                IniLoader.Instance.Read("LocalManifest", "General"),
+                IniLoader.Instance.Read("ServerManifest", "General"));
             Content = new DownloaderViewModel(dwnl);
             dwnl.OnPatchFinished += _onPatchFinished;
             dwnl.StartDownload(true);
