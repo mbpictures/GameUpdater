@@ -8,8 +8,8 @@ namespace GameUpdater.Services
 {
     public class FileChecker
     {
-        private Queue<Updater.Patch> _patches;
-        public FileChecker(Queue<Updater.Patch> patches)
+        private Stack<Updater.Patch> _patches;
+        public FileChecker(Stack<Updater.Patch> patches)
         {
             _patches = patches;
         }
@@ -21,7 +21,7 @@ namespace GameUpdater.Services
             
             while (_patches.Count > 0)
             {
-                patch = _patches.Dequeue();
+                patch = _patches.Pop();
                 foreach (DownloadFile file in patch.Files)
                 {
                     bool fileValid = true;

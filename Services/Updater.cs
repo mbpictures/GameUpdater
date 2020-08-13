@@ -92,9 +92,9 @@ namespace GameUpdater.Services
             var patchVerified = true;
             if (_fileChecking)
             {
-                var queue = new Queue<Patch>();
-                queue.Enqueue(FindPatch(_currentPatch.Version));
-                var fc = new FileChecker(queue);
+                var stack = new Stack<Patch>();
+                stack.Push(FindPatch(_currentPatch.Version));
+                var fc = new FileChecker(stack);
                 var corruptedFiles = fc.GetCorruptedFiles();
                 patchVerified = corruptedFiles.Count == 0;
                 _currentPatch.Files = new Queue<DownloadFile>(corruptedFiles);
