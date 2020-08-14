@@ -18,9 +18,12 @@ namespace GameUpdater.Services
         public delegate void ProgressChangedHandler(object sender, int progress);
         public delegate void DownloadCompleteHandler(object sender);
         public delegate void ErrorHandler(object sender, string error);
+
+        public delegate void FileChangeHandler(object sender, string currentFile);
         public event ProgressChangedHandler OnProgressChanged;
         public event DownloadCompleteHandler OnDownloadComplete;
         public event ErrorHandler OnError;
+        public event FileChangeHandler OnFileChanged;
 
         public Downloader(Queue<DownloadFile> files, long totalAmountToDownload)
         {
@@ -98,6 +101,7 @@ namespace GameUpdater.Services
             if (_files.Count <= 0) return;
             _downloading = true;
             DownloadFile file = _files.Dequeue();
+            OnFileChanged?.Invoke(this, file.FileName);
             string filePath = System.IO.Path.GetFullPath("./") + file.FileName;
             if(System.IO.File.Exists(filePath))
                 System.IO.File.Delete(filePath);
