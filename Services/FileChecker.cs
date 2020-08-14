@@ -45,6 +45,7 @@ namespace GameUpdater.Services
 
         public bool VerifyMd5(string filename, string expectedMd5)
         {
+            if (!File.Exists(filename)) return false;
             using var md5 = MD5.Create();
             using var stream = File.OpenRead(filename);
             var hash = md5.ComputeHash(stream);
@@ -53,6 +54,7 @@ namespace GameUpdater.Services
 
         public bool VerifySha1(string filename, string expectedSha1)
         {
+            if (!File.Exists(filename)) return false;
             using var stream = File.OpenRead(filename);
             using var sha = new SHA1Managed();
             var checksum = sha.ComputeHash(stream);
