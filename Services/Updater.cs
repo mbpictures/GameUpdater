@@ -124,15 +124,15 @@ namespace GameUpdater.Services
             return GetHighestVersionNumber(LocalVersion, newestPatch.Version) != LocalVersion;
         }
 
-        public Stack<Patch> GetPatches()
+        public Stack<Patch> GetPatches(bool fullList = false)
         {
-            if (!CheckUpdates()) return new Stack<Patch>();
+            if (!CheckUpdates() && !fullList) return new Stack<Patch>();
             
             var stack = new Stack<Patch>();
 
             var lCurrentPatch = GetNewestPatch();
 
-            while (lCurrentPatch != null && !PatchIsResolved(lCurrentPatch))
+            while (lCurrentPatch != null && (!PatchIsResolved(lCurrentPatch) || fullList))
             {
                 stack.Push(lCurrentPatch);
                 lCurrentPatch = FindPatch(lCurrentPatch?.DependsOn);
