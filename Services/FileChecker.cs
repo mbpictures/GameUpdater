@@ -9,6 +9,11 @@ namespace GameUpdater.Services
     public class FileChecker
     {
         private Stack<Updater.Patch> _patches;
+
+        public delegate void UpdateCurrentInfo(object sender, string currentfile);
+
+        public event UpdateCurrentInfo OnUpdateCurrentInfo;
+        
         public FileChecker(Stack<Updater.Patch> patches)
         {
             _patches = patches;
@@ -24,6 +29,7 @@ namespace GameUpdater.Services
                 patch = _patches.Pop();
                 foreach (DownloadFile file in patch.Files)
                 {
+                    OnUpdateCurrentInfo?.Invoke(this, file.FileName);
                     bool fileValid = true;
                     if (!string.IsNullOrEmpty(file.MD5))
                         fileValid &= VerifyMd5(file.FileName, file.MD5);
