@@ -8,10 +8,10 @@
             <StackPanel Orientation="Vertical" Margin="20">
                 <TextBlock Margin="5" Text="Checking Files..." HorizontalAlignment="Center" Foreground="#FF000000" FontSize="30" />
                 <Grid>
-                    <ProgressBar Value="50" />
-                    <TextBlock Text="50%" HorizontalAlignment="Center"></TextBlock>
+                    <ProgressBar Value="{Binding Progress}" />
+                    <TextBlock Text="{Binding ProgressText}" HorizontalAlignment="Center"></TextBlock>
                 </Grid>
-                <TextBlock Text="Checking abc..." HorizontalAlignment="Left" Foreground="#FF000000" />
+                <TextBlock Text="{Binding StatusText}" HorizontalAlignment="Left" Foreground="#FF000000" />
             </StackPanel>
         </Border>
 </UserControl>
