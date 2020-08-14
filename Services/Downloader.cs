@@ -17,7 +17,7 @@ namespace GameUpdater.Services
         
         public delegate void ProgressChangedHandler(object sender, int progress);
         public delegate void DownloadCompleteHandler(object sender);
-        public delegate void ErrorHandler(object sender, string Error);
+        public delegate void ErrorHandler(object sender, string error);
         public event ProgressChangedHandler OnProgressChanged;
         public event DownloadCompleteHandler OnDownloadComplete;
         public event ErrorHandler OnError;
