@@ -1,4 +1,3 @@
-using GameUpdater.Views;
 
 namespace GameUpdater.ViewModels
 {

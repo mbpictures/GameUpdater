@@ -1,7 +1,4 @@
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Avalonia.Controls;
 using GameUpdater.Services;
 using MessageBox.Avalonia.DTO;
@@ -16,20 +13,20 @@ namespace GameUpdater.ViewModels
 
         public event CheckFilesFinished OnCheckFilesFinished;
 
-        private int _amountCorruptedFiles = 0;
+        private readonly int _amountCorruptedFiles;
 
         public CheckFilesViewModel()
         {
-            Updater updater = new Updater(
+            var updater = new Updater(
                 IniLoader.Instance.Read("LocalManifest", "General"),
                 IniLoader.Instance.Read("ServerManifest", "General"));
-            FileChecker fileChecker = new FileChecker(updater.GetPatches(true));
+            var fileChecker = new FileChecker(updater.GetPatches(true));
             fileChecker.OnUpdateCurrentInfo += FileCheckerOnUpdateCurrentInfo;
             
-            Queue<DownloadFile> queue = new Queue<DownloadFile>();
+            var queue = new Queue<DownloadFile>();
             fileChecker.GetCorruptedFiles().ForEach(file => queue.Enqueue(file));
             _amountCorruptedFiles = queue.Count;
-            Downloader downloader = new Downloader(queue, 0);
+            var downloader = new Downloader(queue, 0);
             downloader.OnProgressChanged += _onProgressChanged;
             downloader.OnDownloadComplete += _onDownloadFinished;
             downloader.OnFileChanged += DownloaderOnFileChanged;

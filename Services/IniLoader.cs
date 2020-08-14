@@ -6,9 +6,9 @@ using System.Text;
 // Change this to match your program's normal namespace
 namespace GameUpdater.Services
 {
-    class IniLoader // revision 11
+    public class IniLoader // revision 11
     {
-        readonly string _path;
+        private readonly string _path;
         private readonly string _exe = Assembly.GetExecutingAssembly().GetName().Name;
 
         [DllImport("kernel32", CharSet = CharSet.Unicode)]
@@ -20,15 +20,7 @@ namespace GameUpdater.Services
 
         private static IniLoader _instance;
 
-        public static IniLoader Instance
-        {
-            get
-            {
-                if(_instance == null)
-                    _instance = new IniLoader();
-                return _instance;
-            }
-        }
+        public static IniLoader Instance => _instance ??= new IniLoader();
 
         private IniLoader()
         {

@@ -1,5 +1,4 @@
-using System.Collections.Generic;
-using GameUpdater.Services;
+﻿using GameUpdater.Services;
 using ReactiveUI;
 
 namespace GameUpdater.ViewModels
@@ -8,12 +7,12 @@ namespace GameUpdater.ViewModels
     {
         public MainWindowViewModel()
         {
-            Updater dwnl = new Updater(
+            var updater = new Updater(
                 IniLoader.Instance.Read("LocalManifest", "General"),
                 IniLoader.Instance.Read("ServerManifest", "General"));
-            Content = new DownloaderViewModel(dwnl);
-            dwnl.OnPatchFinished += _onPatchFinished;
-            dwnl.StartDownload(true);
+            Content = new DownloaderViewModel(updater);
+            updater.OnPatchFinished += _onPatchFinished;
+            updater.StartDownload(true);
             var manageGame = new ManageGameViewModel();
             BottomBar = manageGame;
             PopupOpen = false;

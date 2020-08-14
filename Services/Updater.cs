@@ -30,27 +30,23 @@ namespace GameUpdater.Services
         {
             get
             {
-                if (_xmlLocal == null)
-                {
-                    _xmlLocal = new XmlDocument();
-                    _xmlLocal.Load(_localManifest);
-                }
+                if (_xmlLocal != null) return _xmlLocal;
+                _xmlLocal = new XmlDocument();
+                _xmlLocal.Load(_localManifest);
 
                 return _xmlLocal;
             }
         }
 
-        public string LocalVersion => GetVersionOfNode(XmlLocal.SelectSingleNode("updater"));
+        public string LocalVersion => _getVersionOfNode(XmlLocal.SelectSingleNode("updater"));
 
         public XmlDocument XmlRemote
         {
             get
             {
-                if (_xmlRemote == null)
-                {
-                    _xmlRemote = new XmlDocument();
-                    _xmlRemote.Load(_remoteManifest);
-                }
+                if (_xmlRemote != null) return _xmlRemote;
+                _xmlRemote = new XmlDocument();
+                _xmlRemote.Load(_remoteManifest);
 
                 return _xmlRemote;
             }
@@ -71,7 +67,7 @@ namespace GameUpdater.Services
             _downloadNextPatch();
         }
 
-        private void _downloadNextPatch(bool redownloadPatch = false)
+        private void _downloadNextPatch(bool reDownloadPatch = false)
         {
             if (_cachedPatches.Count <= 0)
             {
@@ -79,7 +75,7 @@ namespace GameUpdater.Services
                 return;
             }
             OnPatchChanged?.Invoke(this, _currentPatchIndex, _amountPatches);
-            if(!(redownloadPatch && _fileChecking))
+            if(!(reDownloadPatch && _fileChecking))
                 _currentPatch = _cachedPatches.Pop();
             var downloader = new Downloader(_currentPatch.Files, 0);
             downloader.OnDownloadComplete += _downloadPatchComplete;
@@ -121,7 +117,7 @@ namespace GameUpdater.Services
         public bool CheckUpdates()
         {
             var newestPatch = GetNewestPatch();
-            return GetHighestVersionNumber(LocalVersion, newestPatch.Version) != LocalVersion;
+            return _getHighestVersionNumber(LocalVersion, newestPatch.Version) != LocalVersion;
         }
 
         public Stack<Patch> GetPatches(bool fullList = false)
@@ -132,7 +128,7 @@ namespace GameUpdater.Services
 
             var lCurrentPatch = GetNewestPatch();
 
-            while (lCurrentPatch != null && (!PatchIsResolved(lCurrentPatch) || fullList))
+            while (lCurrentPatch != null && (!_patchIsResolved(lCurrentPatch) || fullList))
             {
                 stack.Push(lCurrentPatch);
                 lCurrentPatch = FindPatch(lCurrentPatch?.DependsOn);
@@ -148,8 +144,8 @@ namespace GameUpdater.Services
             for (var i = 0; i < patches.Count; i++)
             {
                 var node = patches[i];
-                var version = GetVersionOfNode(node);
-                newestPatch = GetHighestVersionNumber(version, GetVersionOfNode(newestPatch)) == version ? node : newestPatch;
+                var version = _getVersionOfNode(node);
+                newestPatch = _getHighestVersionNumber(version, _getVersionOfNode(newestPatch)) == version ? node : newestPatch;
             }
 
             return newestPatch == null ? null : Patch.ParseXmlNode(newestPatch);
@@ -161,23 +157,23 @@ namespace GameUpdater.Services
             for (var i = 0; i < patches.Count; i++)
             {
                 var node = patches[i];
-                if (version == GetVersionOfNode(node)) return Patch.ParseXmlNode(node);
+                if (version == _getVersionOfNode(node)) return Patch.ParseXmlNode(node);
             }
 
             return null;
         }
 
-        public bool PatchIsResolved(Patch patch)
+        private bool _patchIsResolved(Patch patch)
         {
             return patch.Version.Equals(LocalVersion);
         }
 
-        public static string GetVersionOfNode(XmlNode node)
+        private static string _getVersionOfNode(XmlNode node)
         {
             return node?.SelectSingleNode("version").InnerText;
         }
 
-        public string GetHighestVersionNumber(string ver1, string ver2)
+        private static string _getHighestVersionNumber(string ver1, string ver2)
         {
             if (string.IsNullOrEmpty(ver1)) return ver2;
             if (string.IsNullOrEmpty(ver2)) return ver1;
@@ -194,7 +190,7 @@ namespace GameUpdater.Services
             {
                 var patch = new Patch
                 {
-                    Version = GetVersionOfNode(node),
+                    Version = _getVersionOfNode(node),
                     Files = new Queue<DownloadFile>(),
                     DependsOn = node.SelectSingleNode("dependsOn").InnerText
                 };
@@ -205,8 +201,8 @@ namespace GameUpdater.Services
                     patch.Files.Enqueue(new DownloadFile(
                         file.SelectSingleNode("url").InnerText,
                         file.SelectSingleNode("location").InnerText,
-                        checksum.SelectSingleNode("md5")?.InnerText,
-                        checksum.SelectSingleNode("sha1")?.InnerText));
+                        checksum.SelectSingleNode("md5")?.InnerText ?? "",
+                        checksum.SelectSingleNode("sha1")?.InnerText ?? ""));
                 }
 
                 return patch;

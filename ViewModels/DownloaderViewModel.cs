@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using GameUpdater.Services;
 using ReactiveUI;
 

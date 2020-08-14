@@ -29,7 +29,7 @@ namespace GameUpdater.Services
 
         public override int GetHashCode()
         {
-            return (FileName != null ? FileName.GetHashCode() : 0);
+            return FileName != null ? FileName.GetHashCode() : 0;
         }
     }
 }

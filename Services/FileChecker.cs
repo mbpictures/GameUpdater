@@ -8,9 +8,9 @@ namespace GameUpdater.Services
 {
     public class FileChecker
     {
-        private Stack<Updater.Patch> _patches;
+        private readonly Stack<Updater.Patch> _patches;
 
-        public delegate void UpdateCurrentInfo(object sender, string currentfile);
+        public delegate void UpdateCurrentInfo(object sender, string currentFile);
 
         public event UpdateCurrentInfo OnUpdateCurrentInfo;
         
@@ -21,20 +21,19 @@ namespace GameUpdater.Services
 
         public List<DownloadFile> GetCorruptedFiles()
         {
-            Updater.Patch patch;
-            Dictionary<string, DownloadFile> temp = new Dictionary<string, DownloadFile>();
+            var temp = new Dictionary<string, DownloadFile>();
             
             while (_patches.Count > 0)
             {
-                patch = _patches.Pop();
+                var patch = _patches.Pop();
                 foreach (DownloadFile file in patch.Files)
                 {
                     OnUpdateCurrentInfo?.Invoke(this, file.FileName);
-                    bool fileValid = true;
+                    var fileValid = true;
                     if (!string.IsNullOrEmpty(file.MD5))
-                        fileValid &= VerifyMd5(file.FileName, file.MD5);
+                        fileValid &= _verifyMd5(file.FileName, file.MD5);
                     if (!string.IsNullOrEmpty(file.SHA1))
-                        fileValid &= VerifySha1(file.FileName, file.SHA1);
+                        fileValid &= _verifySha1(file.FileName, file.SHA1);
 
                     if (!fileValid)
                     {
@@ -49,7 +48,7 @@ namespace GameUpdater.Services
             return temp.Values.ToList();
         }
 
-        public bool VerifyMd5(string filename, string expectedMd5)
+        private static bool _verifyMd5(string filename, string expectedMd5)
         {
             if (!File.Exists(filename)) return false;
             using var md5 = MD5.Create();
@@ -58,7 +57,7 @@ namespace GameUpdater.Services
             return expectedMd5.Equals(BitConverter.ToString(hash).Replace("-", string.Empty).ToLowerInvariant());
         }
 
-        public bool VerifySha1(string filename, string expectedSha1)
+        private static bool _verifySha1(string filename, string expectedSha1)
         {
             if (!File.Exists(filename)) return false;
             using var stream = File.OpenRead(filename);
