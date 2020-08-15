@@ -77,7 +77,7 @@ namespace GameUpdater.Services
             OnPatchChanged?.Invoke(this, _currentPatchIndex, _amountPatches);
             if(!(reDownloadPatch && _fileChecking))
                 _currentPatch = _cachedPatches.Pop();
-            var downloader = new Downloader(_currentPatch.Files, 0);
+            var downloader = new DownloadManager(_currentPatch.Files, 0);
             downloader.OnDownloadComplete += _downloadPatchComplete;
             downloader.OnProgressChanged += _downloadPatchProgress;
             downloader.StartDownload();

@@ -26,7 +26,7 @@ namespace GameUpdater.ViewModels
             var queue = new Queue<DownloadFile>();
             fileChecker.GetCorruptedFiles().ForEach(file => queue.Enqueue(file));
             _amountCorruptedFiles = queue.Count;
-            var downloader = new Downloader(queue, 0);
+            var downloader = new DownloadManager(queue, 0);
             downloader.OnProgressChanged += _onProgressChanged;
             downloader.OnDownloadComplete += _onDownloadFinished;
             downloader.OnFileChanged += DownloaderOnFileChanged;

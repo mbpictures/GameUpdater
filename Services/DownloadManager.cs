@@ -6,7 +6,7 @@ using System.Net;
 
 namespace GameUpdater.Services
 {
-    public class Downloader
+    public class DownloadManager
     {
         private readonly Queue<DownloadFile> _files;
         private BackgroundWorker _worker;
@@ -26,7 +26,7 @@ namespace GameUpdater.Services
         public event ErrorHandler OnError;
         public event FileChangeHandler OnFileChanged;
 
-        public Downloader(Queue<DownloadFile> files, long totalAmountToDownload)
+        public DownloadManager(Queue<DownloadFile> files, long totalAmountToDownload)
         {
             _files = files;
             _wc = new WebClient();
