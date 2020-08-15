@@ -7,13 +7,17 @@ namespace GameUpdater.ViewModels
 {
     public class ManageGameViewModel : ViewModelBase
     {
-        public delegate void Check(object sender);
-
-        public event Check OnCheckFiles;
+        private MainWindowViewModel _parentViewModel;
+        public ManageGameViewModel(MainWindowViewModel parentViewModel)
+        {
+            _parentViewModel = parentViewModel;
+        }
         
         public void CheckFiles()
         {
-            OnCheckFiles?.Invoke(this);    
+            CheckFilesViewModel checkFilesViewModel = new CheckFilesViewModel();
+            checkFilesViewModel.OnCheckFilesFinished += o => _parentViewModel.ClosePopup();
+            _parentViewModel.OpenPopup(checkFilesViewModel);
         }
 
         public void Uninstall()

@@ -1,4 +1,4 @@
-﻿using GameUpdater.Services;
+using GameUpdater.Services;
 using ReactiveUI;
 
 namespace GameUpdater.ViewModels
@@ -10,21 +10,23 @@ namespace GameUpdater.ViewModels
             var updater = new Updater(
                 IniLoader.Instance.Read("LocalManifest", "General"),
                 IniLoader.Instance.Read("ServerManifest", "General"));
-            Content = new DownloaderViewModel(updater);
+            Content = new DownloaderViewModel(this, updater);
             updater.OnPatchFinished += _onPatchFinished;
             updater.StartDownload(true);
-            var manageGame = new ManageGameViewModel();
+            var manageGame = new ManageGameViewModel(this);
             BottomBar = manageGame;
             PopupOpen = false;
-            manageGame.OnCheckFiles += _onOpenCheckFiles; 
         }
 
-        private void _onOpenCheckFiles(object sender)
+        public void OpenPopup(ViewModelBase content)
         {
             PopupOpen = true;
-            CheckFilesViewModel checkFilesViewModel = new CheckFilesViewModel();
-            checkFilesViewModel.OnCheckFilesFinished += o => PopupOpen = false;
-            PopupContent = checkFilesViewModel;
+            PopupContent = content;
+        }
+
+        public void ClosePopup()
+        {
+            PopupOpen = false;
         }
 
         private void _onPatchFinished(object sender)
