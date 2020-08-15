@@ -5,11 +5,28 @@ namespace GameUpdater.ViewModels
 {
     public class DownloaderViewModel : ViewModelBase
     {
+        private Updater _updater;
         public DownloaderViewModel(Updater updater)
         {
+            _updater = updater;
             updater.OnPatchProgress += _onProgressChanged;
             updater.OnPatchChanged += _onPatchChanged;
             Progress = 0;
+            PauseVisible = true;
+        }
+
+        public void PauseDownload()
+        {
+            PauseVisible = false;
+            PlayVisible = true;
+            _updater?.Pause();
+        }
+        
+        public void ResumeDownload()
+        {
+            PauseVisible = true;
+            PlayVisible = false;
+            _updater?.Resume();
         }
 
         private void _onPatchChanged(object sender, int currentPatch, int amountPatches)
@@ -44,6 +61,19 @@ namespace GameUpdater.ViewModels
             set => this.RaiseAndSetIfChanged(ref _patchInfo, value);
         }
         
+        private bool _pauseVisible;
+        public bool PauseVisible
+        {
+            get => _pauseVisible;
+            set => this.RaiseAndSetIfChanged(ref _pauseVisible, value);
+        }
+        
+        private bool _playVisible;
+        public bool PlayVisible
+        {
+            get => _playVisible;
+            set => this.RaiseAndSetIfChanged(ref _playVisible, value);
+        }
         
     }
 }

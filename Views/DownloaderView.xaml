@@ -6,9 +6,19 @@
              x:Class="GameUpdater.Views.DownloaderView">
     <StackPanel>
         <TextBlock Text="{Binding PatchInfo}" HorizontalAlignment="Center"/>
-        <Grid Margin="5">
-            <ProgressBar Grid.Row="0" Grid.Column="0" Value="{Binding Progress}" />
-            <TextBlock Grid.Row="0" Grid.Column="0" Text="{Binding ProgressText}" HorizontalAlignment="Center"></TextBlock>
-        </Grid>
+        <DockPanel>
+            <Grid DockPanel.Dock="Right" Width="30" Height="30">
+                <Button BorderThickness="0" Background="#00000000" IsVisible="{Binding PauseVisible}" Command="{Binding PauseDownload}">
+                    <Image Source="/Assets/pause.png" />
+                </Button>
+                <Button BorderThickness="0" Background="#00000000" IsVisible="{Binding PlayVisible}" Command="{Binding ResumeDownload}">
+                    <Image Source="/Assets/play.png" />
+                </Button>
+            </Grid>
+            <Grid Margin="5">
+                <ProgressBar Grid.Row="0" Grid.Column="0" Value="{Binding Progress}" />
+                <TextBlock Grid.Row="0" Grid.Column="0" Text="{Binding ProgressText}" HorizontalAlignment="Center"></TextBlock>
+            </Grid>
+        </DockPanel>
     </StackPanel>
 </UserControl>
