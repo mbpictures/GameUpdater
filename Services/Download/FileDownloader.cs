@@ -109,8 +109,6 @@ namespace GameUpdater.Services.Download
 
                 _progress?.Report((double) BytesWritten / ContentLength);
                 OnProgress?.Invoke(this, BytesWritten);
-                if(BytesWritten == ContentLength)
-                    OnFinish?.Invoke(this);
             }
             
             await fs.FlushAsync();
@@ -119,7 +117,10 @@ namespace GameUpdater.Services.Download
         public Task Start()
         {
             _allowedToRun = true;
-            return Start(BytesWritten);
+            return Start(BytesWritten).ContinueWith((task) =>
+            {
+                OnFinish?.Invoke(this);
+            });
         }
 
         public void Pause()
