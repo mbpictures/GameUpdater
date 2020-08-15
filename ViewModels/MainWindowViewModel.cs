@@ -1,4 +1,4 @@
-using GameUpdater.Services;
+﻿using GameUpdater.Services;
 using ReactiveUI;
 
 namespace GameUpdater.ViewModels

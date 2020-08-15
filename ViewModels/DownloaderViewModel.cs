@@ -6,9 +6,11 @@ namespace GameUpdater.ViewModels
     public class DownloaderViewModel : ViewModelBase
     {
         private Updater _updater;
-        public DownloaderViewModel(Updater updater)
+        private MainWindowViewModel _parentViewModel;
+        public DownloaderViewModel(MainWindowViewModel parentViewModel, Updater updater)
         {
             _updater = updater;
+            _parentViewModel = parentViewModel;
             updater.OnPatchProgress += _onProgressChanged;
             updater.OnPatchChanged += _onPatchChanged;
             Progress = 0;
@@ -27,6 +29,11 @@ namespace GameUpdater.ViewModels
             PauseVisible = true;
             PlayVisible = false;
             _updater?.Resume();
+        }
+
+        public void OpenDownloadSettings()
+        {
+            _parentViewModel.OpenPopup(new DownloadSettingsViewModel(_parentViewModel, _updater));
         }
 
         private void _onPatchChanged(object sender, int currentPatch, int amountPatches)

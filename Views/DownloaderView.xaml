@@ -7,6 +7,9 @@
     <StackPanel>
         <TextBlock Text="{Binding PatchInfo}" HorizontalAlignment="Center"/>
         <DockPanel>
+            <Button DockPanel.Dock="Right" Width="30" Height="30" BorderThickness="0" Background="#00000000" Command="{Binding OpenDownloadSettings}">
+                <Image Source="/Assets/cog.png" />
+            </Button>
             <Grid DockPanel.Dock="Right" Width="30" Height="30">
                 <Button BorderThickness="0" Background="#00000000" IsVisible="{Binding PauseVisible}" Command="{Binding PauseDownload}">
                     <Image Source="/Assets/pause.png" />

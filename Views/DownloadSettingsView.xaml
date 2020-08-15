@@ -1,0 +1,18 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="GameUpdater.Views.DownloadSettingsView"
+             d:DataContext="{Binding Context}">
+    <Grid>
+        <Button BorderThickness="0" Opacity="0" Command="{Binding CloseDownloadSettings}" />
+        <Border Background="#FFFFFFFF" HorizontalAlignment="Center" VerticalAlignment="Center">
+            <StackPanel Orientation="Vertical" Margin="20">
+                <TextBlock Margin="5" Text="Max Download Speed" Foreground="#FF000000" FontSize="20" />
+                <Slider Value="100" Minimum="1" Maximum="100" MinWidth="200" MinHeight="30" IsSnapToTickEnabled="True" Name="SpeedSlider" />
+                <TextBlock Text="" Foreground="#FF000000" HorizontalAlignment="Center" Name="SpeedText"/>
+            </StackPanel>
+        </Border>
+    </Grid>
+</UserControl>
