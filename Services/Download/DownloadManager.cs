@@ -4,7 +4,7 @@ using System.ComponentModel;
 using System.IO;
 using System.Net;
 
-namespace GameUpdater.Services
+namespace GameUpdater.Services.Download
 {
     public class DownloadManager
     {

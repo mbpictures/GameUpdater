@@ -1,6 +1,6 @@
 #nullable enable
 
-namespace GameUpdater.Services
+namespace GameUpdater.Services.Download
 {
     public readonly struct DownloadFile
     {
