@@ -11,7 +11,7 @@ namespace GameUpdater.Services.Download
         private readonly Queue<DownloadFile> _files;
         private BackgroundWorker _worker;
         private bool _downloading;
-        private readonly WebClient _wc;
+        private FileDownloader _fd;
         private long _downloadedAmount;
         private long _totalDownloadedAmount;
         private long _totalAmountToDownload;
@@ -29,7 +29,6 @@ namespace GameUpdater.Services.Download
         public DownloadManager(Queue<DownloadFile> files, long totalAmountToDownload)
         {
             _files = files;
-            _wc = new WebClient();
             _totalAmountToDownload = totalAmountToDownload;
         }
 
@@ -66,7 +65,8 @@ namespace GameUpdater.Services.Download
             {
                 if (_worker.CancellationPending)
                 {
-                    _wc.CancelAsync();
+                    //_wc.CancelAsync();
+                    _fd.Pause();
                     e.Cancel = true;
                     return;
                 }
@@ -110,21 +110,38 @@ namespace GameUpdater.Services.Download
                 File.Delete(filePath);
             else
                 Directory.CreateDirectory(Path.GetDirectoryName(filePath));
-            _wc.DownloadProgressChanged += _downloadProgressChanged;
-            _wc.DownloadFileCompleted += _downloadComplete;
-            _wc.DownloadFileTaskAsync(new Uri(file.URL), Path.GetFullPath("./") + file.FileName);
+            _fd = new FileDownloader(file.URL, file.FileName);
+            _fd.OnProgress += _downloadProgressChanged;
+            _fd.OnFinish += _downloadComplete;
+            _fd.Start();
         }
 
-        private void _downloadProgressChanged(object sender, DownloadProgressChangedEventArgs e)
+        private void _downloadProgressChanged(object sender, long bytesReceived)
         {
-            _downloadedAmount = e.BytesReceived;
+            _downloadedAmount = bytesReceived;
             var progress = (int) ((_totalDownloadedAmount + _downloadedAmount) / (double) _totalAmountToDownload * 100);
             OnProgressChanged?.Invoke(this, progress);
         }
-        private void _downloadComplete(object sender, AsyncCompletedEventArgs e)
+        private void _downloadComplete(object sender)
         {
             _totalDownloadedAmount += _downloadedAmount;
             _downloading = false;
+        }
+
+        public void PauseDownload()
+        {
+            _fd?.Pause();
+        }
+
+        public void ResumeDownload()
+        {
+            _fd?.Start();
+        }
+
+        public void SetMaxBytesPerSecond(long maxBytesPerSecond)
+        {
+            if (_fd == null) return;
+            _fd.MaxBytesPerSecond = maxBytesPerSecond;
         }
     }
 }

@@ -18,7 +18,8 @@ namespace GameUpdater.Services
         private int _currentPatchIndex = 1;
         private Patch _currentPatch;
         private bool _fileChecking;
-        
+        private DownloadManager _currentDownloader;
+
         public delegate void PatchProgressHandler(object sender, int progress);
         public delegate void PatchChangedHandler(object sender, int currentPatch, int amountPatches);
         public delegate void PatchFinishedHandler(object sender);
@@ -78,10 +79,10 @@ namespace GameUpdater.Services
             OnPatchChanged?.Invoke(this, _currentPatchIndex, _amountPatches);
             if(!(reDownloadPatch && _fileChecking))
                 _currentPatch = _cachedPatches.Pop();
-            var downloader = new DownloadManager(_currentPatch.Files, 0);
-            downloader.OnDownloadComplete += _downloadPatchComplete;
-            downloader.OnProgressChanged += _downloadPatchProgress;
-            downloader.StartDownload();
+            _currentDownloader = new DownloadManager(_currentPatch.Files, 0);
+            _currentDownloader.OnDownloadComplete += _downloadPatchComplete;
+            _currentDownloader.OnProgressChanged += _downloadPatchProgress;
+            _currentDownloader.StartDownload();
         }
 
         private void _downloadPatchComplete(object sender)
@@ -179,6 +180,21 @@ namespace GameUpdater.Services
             if (string.IsNullOrEmpty(ver1)) return ver2;
             if (string.IsNullOrEmpty(ver2)) return ver1;
             return Version.Parse(ver2).CompareTo(Version.Parse(ver1)) == 1 ? ver2 : ver1;
+        }
+
+        public void Pause()
+        {
+            _currentDownloader?.PauseDownload();
+        }
+
+        public void Resume()
+        {
+            _currentDownloader?.ResumeDownload();
+        }
+
+        public void SetMaxBytesPerSecond(long bytesPerSecond)
+        {
+            _currentDownloader?.SetMaxBytesPerSecond(bytesPerSecond);
         }
 
         public class Patch
