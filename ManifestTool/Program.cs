@@ -65,18 +65,28 @@ namespace ManifestTool
                 url.InnerText = $"{options.Url}/{file}";
                 var location = doc.CreateNode(XmlNodeType.Element, "location", "");
                 location.InnerText = file;
-                
-                var checksum = doc.CreateNode(XmlNodeType.Element, "checksum", "");
-                var md5 = doc.CreateNode(XmlNodeType.Element, "md5", "");
-                md5.InnerText = GetMd5FromFile(file);
-                var sha1 = doc.CreateNode(XmlNodeType.Element, "sha1", "");
-                sha1.InnerText = GetSha1FromFile(file);
-                checksum.AppendChild(md5);
-                checksum.AppendChild(sha1);
+
+                if ((options.GenerateMd5.HasValue && options.GenerateMd5.Value) || (options.GenerateSha1.HasValue && options.GenerateSha1.Value))
+                {
+                    var checksum = doc.CreateNode(XmlNodeType.Element, "checksum", "");
+                    if ((options.GenerateMd5.HasValue && options.GenerateMd5.Value))
+                    {
+                        var md5 = doc.CreateNode(XmlNodeType.Element, "md5", "");
+                        md5.InnerText = GetMd5FromFile(file);
+                        checksum.AppendChild(md5);
+                    }
+
+                    if ((options.GenerateSha1.HasValue && options.GenerateSha1.Value))
+                    {
+                        var sha1 = doc.CreateNode(XmlNodeType.Element, "sha1", "");
+                        sha1.InnerText = GetSha1FromFile(file);
+                        checksum.AppendChild(sha1);
+                    }
+                    node.AppendChild(checksum);
+                }
 
                 node.AppendChild(url);
                 node.AppendChild(location);
-                node.AppendChild(checksum);
                 
                 nodeList.Add(node);
             });

@@ -22,6 +22,12 @@ namespace ManifestTool
         
         [Option('s', "save-location", HelpText = "Path to the generated server manifest xml file (source xml file will be overriden, if not provided)", Required = false)]
         public string XmlSave { get; set; }
+        
+        [Option("md5", HelpText = "Should a md5 hash be created to provide checksum validating", Required = false, Default = true)]
+        public bool? GenerateMd5 { get; set; }
+        
+        [Option("sha1", HelpText = "Should a sha1 hash be created to provide checksum validating", Required = false, Default = true)]
+        public bool? GenerateSha1 { get; set; }
         public static string GetUsage<T>(ParserResult<T> result)
         {
             return HelpText.AutoBuild(result, h =>
