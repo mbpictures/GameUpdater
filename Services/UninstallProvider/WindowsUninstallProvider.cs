@@ -4,7 +4,7 @@ using Microsoft.Win32;
 
 namespace GameUpdater.Services.UninstallProvider
 {
-    public class WindowsUninstallProvider : UninstallProvider
+    public class WindowsUninstallProvider : IUninstallProvider
     {
         public void Uninstall()
         {
@@ -33,23 +33,23 @@ namespace GameUpdater.Services.UninstallProvider
             var uninstallString = string.Empty;
             try
             {
-                var path = "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Installer\\UserData\\S-1-5-18\\Products";
+                const string path = "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Installer\\UserData\\S-1-5-18\\Products";
 
                 var key = Registry.LocalMachine.OpenSubKey(path);
 
-                if (key != null)
-                    foreach (var tempKeyName in key.GetSubKeyNames())
-                    {
-                        var tempKey = key.OpenSubKey(tempKeyName + "\\InstallProperties");
-                        if (tempKey == null) continue;
-                        if (!string.Equals(Convert.ToString(tempKey.GetValue("DisplayName")), msiName,
-                            StringComparison.CurrentCultureIgnoreCase)) continue;
-                        uninstallString = Convert.ToString(tempKey.GetValue("UninstallString"));
-                        uninstallString = uninstallString?.Replace("/I", "/X");
-                        uninstallString = uninstallString?.Replace("MsiExec.exe", "").Trim();
-                        uninstallString += " /quiet /qn";
-                        break;
-                    }
+                if (key == null) return uninstallString;
+                foreach (var tempKeyName in key.GetSubKeyNames())
+                {
+                    var tempKey = key.OpenSubKey(tempKeyName + "\\InstallProperties");
+                    if (tempKey == null) continue;
+                    if (!string.Equals(Convert.ToString(tempKey.GetValue("DisplayName")), msiName,
+                        StringComparison.CurrentCultureIgnoreCase)) continue;
+                    uninstallString = Convert.ToString(tempKey.GetValue("UninstallString"));
+                    uninstallString = uninstallString?.Replace("/I", "/X");
+                    uninstallString = uninstallString?.Replace("MsiExec.exe", "").Trim();
+                    uninstallString += " /quiet /qn";
+                    break;
+                }
 
                 return uninstallString;
             }

@@ -1,4 +1,3 @@
-using Avalonia.Controls;
 using GameUpdater.Services;
 using ReactiveUI;
 
@@ -6,8 +5,8 @@ namespace GameUpdater.ViewModels
 {
     public class DownloadSettingsViewModel : ViewModelBase
     {
-        private MainWindowViewModel _parent;
-        private Updater _updater;
+        private readonly MainWindowViewModel _parent;
+        private readonly Updater _updater;
         public DownloadSettingsViewModel(MainWindowViewModel parent, Updater updater)
         {
             _parent = parent;

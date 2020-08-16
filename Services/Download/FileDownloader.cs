@@ -117,7 +117,7 @@ namespace GameUpdater.Services.Download
         public Task Start()
         {
             _allowedToRun = true;
-            return Start(BytesWritten).ContinueWith((task) =>
+            return Start(BytesWritten).ContinueWith(task =>
             {
                 OnFinish?.Invoke(this);
             });

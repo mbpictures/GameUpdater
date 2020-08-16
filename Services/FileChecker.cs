@@ -27,7 +27,7 @@ namespace GameUpdater.Services
             while (_patches.Count > 0)
             {
                 var patch = _patches.Pop();
-                foreach (DownloadFile file in patch.Files)
+                foreach (var file in patch.Files)
                 {
                     OnUpdateCurrentInfo?.Invoke(this, file.FileName);
                     var fileValid = true;

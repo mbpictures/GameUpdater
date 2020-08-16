@@ -4,10 +4,10 @@ namespace GameUpdater.Services
 {
     public class Uninstall
     {
-        private readonly List<UninstallProvider.UninstallProvider> _uninstallProviders;
+        private readonly List<UninstallProvider.IUninstallProvider> _uninstallProviders;
         public Uninstall()
         {
-            _uninstallProviders = new List<UninstallProvider.UninstallProvider>();
+            _uninstallProviders = new List<UninstallProvider.IUninstallProvider>();
             
             #if Windows
                 _uninstallProviders.Add(new UninstallProvider.WindowsUninstallProvider());

@@ -1,6 +1,6 @@
 namespace GameUpdater.Services.UninstallProvider
 {
-    public interface UninstallProvider
+    public interface IUninstallProvider
     {
         public void Uninstall();
     }

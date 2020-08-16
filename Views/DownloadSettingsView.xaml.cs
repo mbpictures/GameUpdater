@@ -1,5 +1,4 @@
 using System;
-using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 using GameUpdater.ViewModels;
@@ -21,7 +20,7 @@ namespace GameUpdater.Views
             AvaloniaXamlLoader.Load(this);
             _speedSlider = this.FindControl<Slider>("SpeedSlider");
             _speedText = this.FindControl<TextBlock>("SpeedText");
-            _speedSlider.WhenAnyValue(x => x.Value).Subscribe(x => _onSpeedSliderChange(x));
+            _speedSlider.WhenAnyValue(x => x.Value).Subscribe(_onSpeedSliderChange);
         }
 
         private void _onSpeedSliderChange(double value)

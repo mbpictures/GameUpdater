@@ -5,8 +5,8 @@ namespace GameUpdater.ViewModels
 {
     public class DownloaderViewModel : ViewModelBase
     {
-        private Updater _updater;
-        private MainWindowViewModel _parentViewModel;
+        private readonly Updater _updater;
+        private readonly MainWindowViewModel _parentViewModel;
         public DownloaderViewModel(MainWindowViewModel parentViewModel, Updater updater)
         {
             _updater = updater;

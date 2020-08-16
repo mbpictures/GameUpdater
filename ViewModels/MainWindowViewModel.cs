@@ -12,7 +12,7 @@ namespace GameUpdater.ViewModels
                 IniLoader.Instance.Read("ServerManifest", "General"));
             Content = new DownloaderViewModel(this, updater);
             updater.OnPatchFinished += _onPatchFinished;
-            updater.StartDownload(true);
+            updater.StartDownload();
             var manageGame = new ManageGameViewModel(this);
             BottomBar = manageGame;
             PopupOpen = false;

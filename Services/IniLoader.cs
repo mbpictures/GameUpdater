@@ -21,8 +21,6 @@ namespace GameUpdater.Services
             public string Key;
         }
 
-        private Dictionary<string, string> _dictionary = new Dictionary<string, string>();
-
         private IniLoader()
         {
             Path = new FileInfo(_exe + ".ini").FullName;
@@ -114,7 +112,7 @@ namespace GameUpdater.Services
             var sections = new ArrayList();
             var strToSave = "";
 
-            foreach (SectionPair sectionPair in this._keyPairs.Keys)
+            foreach (SectionPair sectionPair in _keyPairs.Keys)
             {
                 if (!sections.Contains(sectionPair.Section))
                     sections.Add(sectionPair.Section);
@@ -122,8 +120,8 @@ namespace GameUpdater.Services
             
             foreach (string section in sections)
             {
-                strToSave += ("[" +section + "]\r\n");
-                foreach (SectionPair sectionPair in this._keyPairs.Keys)
+                strToSave += ("[" + section + "]\r\n");
+                foreach (SectionPair sectionPair in _keyPairs.Keys)
                 {
                     if (sectionPair.Section != section) continue;
                     var tmpValue = (string) _keyPairs[sectionPair];

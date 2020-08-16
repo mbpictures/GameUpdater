@@ -53,7 +53,7 @@ namespace GameUpdater.ViewModels
         private void _onDownloadFinished(object sender)
         {
             var messageBoxStandardWindow = MessageBox.Avalonia.MessageBoxManager.GetMessageBoxStandardWindow(
-                new MessageBoxStandardParams()
+                new MessageBoxStandardParams
                 {
                     ContentTitle = "File Check finished",
                     ContentMessage = $"The File Check has been finished!\n{_amountCorruptedFiles} files repaired!",
