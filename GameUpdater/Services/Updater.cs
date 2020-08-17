@@ -218,8 +218,8 @@ namespace GameUpdater.Services
                     patch.Files.Enqueue(new DownloadFile(
                         file.SelectSingleNode("url").InnerText,
                         file.SelectSingleNode("location").InnerText,
-                        checksum.SelectSingleNode("md5")?.InnerText ?? "",
-                        checksum.SelectSingleNode("sha1")?.InnerText ?? ""));
+                        checksum?.SelectSingleNode("md5")?.InnerText ?? "",
+                        checksum?.SelectSingleNode("sha1")?.InnerText ?? ""));
                 }
 
                 return patch;
