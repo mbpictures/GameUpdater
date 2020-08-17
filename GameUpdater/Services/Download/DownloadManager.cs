@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
+using System.IO.Compression;
 using System.Net;
 
 namespace GameUpdater.Services.Download
@@ -126,6 +127,8 @@ namespace GameUpdater.Services.Download
         private void _downloadComplete(object sender)
         {
             _totalDownloadedAmount += _downloadedAmount;
+            if(_currentFile.ZIP)
+                ZipFile.ExtractToDirectory(_currentFile.FileName, IniLoader.Instance.Read("GameDirectory", "General"));
             _downloading = false;
         }
 

@@ -8,13 +8,15 @@ namespace GameUpdater.Services.Download
         public readonly string FileName;
         public readonly string MD5;
         public readonly string SHA1;
+        public readonly bool ZIP;
 
-        public DownloadFile(string url, string fileName, string md5, string sha1)
+        public DownloadFile(string url, string fileName, string md5, string sha1, bool zip = false)
         {
             URL = url;
             FileName = fileName;
             MD5 = md5;
             SHA1 = sha1;
+            ZIP = zip;
         }
 
         public override bool Equals(object? obj)

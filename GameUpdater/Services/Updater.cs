@@ -219,7 +219,8 @@ namespace GameUpdater.Services
                         file.SelectSingleNode("url").InnerText,
                         file.SelectSingleNode("location").InnerText,
                         checksum?.SelectSingleNode("md5")?.InnerText ?? "",
-                        checksum?.SelectSingleNode("sha1")?.InnerText ?? ""));
+                        checksum?.SelectSingleNode("sha1")?.InnerText ?? "",
+                        Convert.ToBoolean(file.Attributes["zip"]?.Value)));
                 }
 
                 return patch;
