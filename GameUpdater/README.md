@@ -4,7 +4,7 @@ With this project, you can add a simple GameUpdater/Launcher to your Unity/Unrea
 
 ## Usage
 1. Clone the repository or download a release
-2. Build the project using ```dotnet build``` or ```dotnet publish -r RUNTIME_IDENTIFIER -c Release /p:PublishSingleFile=true --self-contained false``` (replace RUNTIME_IDENTIFIER with your target platform, e.g. osx-x64, linux-x64, windows-x64,...)
+2. Build the project using ```dotnet build``` or ```dotnet publish -r RUNTIME_IDENTIFIER -c Release /p:PublishSingleFile=true /p:TrimUnusedDependencies=true --self-contained false``` (replace RUNTIME_IDENTIFIER with your target platform, e.g. osx-x64, linux-x64, windows-x64,...)
 3. Put the [sample INI file](GameUpdater.ini) and the [update.xml](update.xml) under the same hierarchy as the executable (otherwise, the Launcher won't start!)
 4. Upload the Patch-Manifest to your web space of choice, for example [this one](http://projects.marius-butz.de/updater/update.xml)
 5. Adjust the fields for ```GameExe``` (relative path with your game executable), ```GameDirectory``` (relative path with your game folder, this folder will be deleted when the user uninstalls the game using the Updater), ```LocalManifest``` (relative path with local manifest file) and ```ServerManifest``` (URL to the server manifest file, which you uploaded in step 4). Optionally you can set ```UseUniversalUninstall``` to ```False``` and set the ```MsiName``` to the name of your game installer, this will use the windows native uninstaller to uninstall the game as intended (only works for windows!).
