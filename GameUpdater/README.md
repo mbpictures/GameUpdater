@@ -1,5 +1,6 @@
 # GameUpdater
 With this project, you can add a simple GameUpdater/Launcher to your Unity/UnrealEngine (or whatever game engine you prefer) game. This project uses [AvaloniaUI](https://github.com/AvaloniaUI/Avalonia) to provide an easy and flexible way to support cross-platform GUI.
+![Screenshot](http://projects.marius-butz.de/updater/Screenshot.png)
 
 ## Usage
 1. Clone the repository or download a release
