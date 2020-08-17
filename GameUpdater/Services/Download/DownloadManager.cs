@@ -15,7 +15,8 @@ namespace GameUpdater.Services.Download
         private long _downloadedAmount;
         private long _totalDownloadedAmount;
         private long _totalAmountToDownload;
-        
+        private DownloadFile _currentFile;
+
         public delegate void ProgressChangedHandler(object sender, int progress);
         public delegate void DownloadCompleteHandler(object sender);
         public delegate void ErrorHandler(object sender, string error);
@@ -103,14 +104,14 @@ namespace GameUpdater.Services.Download
         {
             if (_files.Count <= 0) return;
             _downloading = true;
-            var file = _files.Dequeue();
-            OnFileChanged?.Invoke(this, file.FileName);
-            var filePath = Path.GetFullPath("./") + file.FileName;
+            _currentFile = _files.Dequeue();
+            OnFileChanged?.Invoke(this, _currentFile.FileName);
+            var filePath = Path.GetFullPath("./") + _currentFile.FileName;
             if(File.Exists(filePath))
                 File.Delete(filePath);
             else
                 Directory.CreateDirectory(Path.GetDirectoryName(filePath));
-            _fd = new FileDownloader(file.URL, file.FileName);
+            _fd = new FileDownloader(_currentFile.URL, _currentFile.FileName);
             _fd.OnProgress += _downloadProgressChanged;
             _fd.OnFinish += _downloadComplete;
             _fd.Start();
