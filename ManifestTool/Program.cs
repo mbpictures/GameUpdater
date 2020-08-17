@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.Design;
 using System.IO;
+using System.IO.Compression;
 using System.Security.Cryptography;
 using System.Xml;
 using CommandLine;
@@ -53,6 +55,16 @@ namespace ManifestTool
                 files.AddRange(Directory.GetFiles(options.File, "*.*", SearchOption.AllDirectories));
             else
                 files.Add(options.File);
+
+            var zipAttribute = false;
+            if (options.Zip.HasValue && options.Zip.Value && (attr & FileAttributes.Directory) == FileAttributes.Directory)
+            {
+                var zipFileName = new DirectoryInfo(options.File).Name + ".zip";
+                ZipFile.CreateFromDirectory(options.File, zipFileName);
+                files.Clear();
+                files.Add(zipFileName);
+                zipAttribute = true;
+            }
             
             files.ForEach(file =>
             {
@@ -61,6 +73,13 @@ namespace ManifestTool
                     file = file.Remove(0, 2);
 
                 var node = doc.CreateNode(XmlNodeType.Element, "file", "");
+                if (zipAttribute)
+                {
+                    XmlAttribute attribute = doc.CreateAttribute("zip");
+                    attribute.InnerText = "true";
+                    node.Attributes.Append(attribute);
+                }
+
                 var url = doc.CreateNode(XmlNodeType.Element, "url", "");
                 url.InnerText = $"{options.Url}/{file}";
                 var location = doc.CreateNode(XmlNodeType.Element, "location", "");

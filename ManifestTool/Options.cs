@@ -28,6 +28,9 @@ namespace ManifestTool
         
         [Option("sha1", HelpText = "Should a sha1 hash be created to provide checksum validating", Required = false, Default = true)]
         public bool? GenerateSha1 { get; set; }
+        
+        [Option("zip", HelpText = "Zip all files inside a single patch file and create and create a file, which contains all checksums (if enabled)", Required = false, Default = false)]
+        public bool? Zip { get; set; }
         public static string GetUsage<T>(ParserResult<T> result)
         {
             return HelpText.AutoBuild(result, h =>
