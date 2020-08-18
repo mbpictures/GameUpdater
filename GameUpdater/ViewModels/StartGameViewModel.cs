@@ -1,3 +1,4 @@
+using System;
 using System.Diagnostics;
 using GameUpdater.Services;
 
@@ -9,6 +10,7 @@ namespace GameUpdater.ViewModels
         public void StartGame()
         {
             Process.Start(IniLoader.Instance.Read("GameExe", "General"));
+            Environment.Exit(0);
         }
     }
 }
