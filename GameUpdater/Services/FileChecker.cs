@@ -30,6 +30,7 @@ namespace GameUpdater.Services
                 foreach (var file in patch.Files)
                 {
                     OnUpdateCurrentInfo?.Invoke(this, file.FileName);
+                    if (file.ZIP) continue;
                     var fileValid = true;
                     if (!string.IsNullOrEmpty(file.MD5))
                         fileValid &= _verifyMd5(file.FileName, file.MD5);
