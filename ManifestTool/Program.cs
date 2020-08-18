@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
+using System.Runtime;
 using System.Security.Cryptography;
 using System.Xml;
 using CommandLine;
@@ -60,7 +61,7 @@ namespace ManifestTool
             {
                 var zipFileName = new DirectoryInfo(options.File).Name + ".zip";
                 if((options.GenerateMd5.HasValue && options.GenerateMd5.Value) || (options.GenerateSha1.HasValue && options.GenerateSha1.Value))
-                    GenerateChecksumFile(options.File, options);
+                    GenerateChecksumFile(options.File, options, zipFileName);
                 ZipFile.CreateFromDirectory(options.File, zipFileName);
                 files.Clear();
                 files.Add(zipFileName);
@@ -130,9 +131,12 @@ namespace ManifestTool
             return BitConverter.ToString(checksum).Replace("-", string.Empty).ToLowerInvariant();
         }
 
-        private static void GenerateChecksumFile(string directoryPath, Options options)
+        private static void GenerateChecksumFile(string directoryPath, Options options, string zipFileName)
         {
-            var doc = new XmlDocument {InnerXml = "<files></files>"};
+            var doc = new XmlDocument {InnerXml = "<checksums><url></url><version></version><filename></filename><files></files></checksums>"};
+            doc.GetElementsByTagName("url")[0].InnerText = Path.Combine(options.Url, zipFileName);
+            doc.GetElementsByTagName("version")[0].InnerText = options.Version;
+            doc.GetElementsByTagName("filename")[0].InnerText = zipFileName;
             var files = doc.GetElementsByTagName("files")[0];
             foreach (var file in Directory.GetFiles(directoryPath, "*.*", SearchOption.AllDirectories))
             {
