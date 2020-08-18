@@ -83,7 +83,7 @@ namespace ManifestTool
                 }
 
                 var url = doc.CreateNode(XmlNodeType.Element, "url", "");
-                url.InnerText = $"{options.Url}/{file}";
+                url.InnerText = Path.Combine(options.Url, file);
                 var location = doc.CreateNode(XmlNodeType.Element, "location", "");
                 location.InnerText = file;
 
