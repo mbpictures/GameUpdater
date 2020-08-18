@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.Design;
 using System.IO;
 using System.IO.Compression;
 using System.Security.Cryptography;
@@ -60,6 +59,8 @@ namespace ManifestTool
             if (options.Zip.HasValue && options.Zip.Value && (attr & FileAttributes.Directory) == FileAttributes.Directory)
             {
                 var zipFileName = new DirectoryInfo(options.File).Name + ".zip";
+                if((options.GenerateMd5.HasValue && options.GenerateMd5.Value) || (options.GenerateSha1.HasValue && options.GenerateSha1.Value))
+                    GenerateChecksumFile(options.File, options);
                 ZipFile.CreateFromDirectory(options.File, zipFileName);
                 files.Clear();
                 files.Add(zipFileName);
@@ -127,6 +128,34 @@ namespace ManifestTool
             using var sha = new SHA1Managed();
             var checksum = sha.ComputeHash(stream);
             return BitConverter.ToString(checksum).Replace("-", string.Empty).ToLowerInvariant();
+        }
+
+        private static void GenerateChecksumFile(string directoryPath, Options options)
+        {
+            var doc = new XmlDocument {InnerXml = "<files></files>"};
+            var files = doc.GetElementsByTagName("files")[0];
+            foreach (var file in Directory.GetFiles(directoryPath, "*.*", SearchOption.AllDirectories))
+            {
+                var node = doc.CreateNode(XmlNodeType.Element, "file", "");
+                var filename = doc.CreateNode(XmlNodeType.Element, "filename", "");
+                filename.InnerText = Path.GetRelativePath(directoryPath, file);
+                node.AppendChild(filename);
+                if (options.GenerateMd5.HasValue && options.GenerateMd5.Value)
+                {
+                    var md5 = doc.CreateNode(XmlNodeType.Element, "md5", "");
+                    md5.InnerText = GetMd5FromFile(file);
+                    node.AppendChild(md5);
+                }
+                if (options.GenerateSha1.HasValue && options.GenerateSha1.Value)
+                {
+                    var sha1 = doc.CreateNode(XmlNodeType.Element, "sha1", "");
+                    sha1.InnerText = GetMd5FromFile(file);
+                    node.AppendChild(sha1);
+                }
+
+                files.AppendChild(node);
+            }
+            doc.Save(Path.Combine(directoryPath, new DirectoryInfo(directoryPath).Name + ".checksum.xml"));
         }
     }
 }
