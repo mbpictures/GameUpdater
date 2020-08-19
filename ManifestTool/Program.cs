@@ -1,7 +1,8 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
+using System.Linq;
 using System.Runtime;
 using System.Security.Cryptography;
 using System.Xml;
@@ -25,9 +26,24 @@ namespace ManifestTool
             var doc = new XmlDocument();
             doc.Load(options.Xml);
             var node = doc.GetElementsByTagName("patches")[0];
+            if (CheckVersionExists(doc, options.Version))
+            {
+                Console.WriteLine("A patch with this version already exists! Should it be overriden? [y/n]");
+                var response = Console.ReadKey(false).Key;
+                if (response == ConsoleKey.N) return;
+                // search for all patches with the same version key as provided and remove them from the patch list
+                doc.GetElementsByTagName("patch").Cast<XmlNode>().ToList()
+                    .Where(patch => patch.SelectSingleNode("version").InnerText == options.Version).ToList()
+                    .ForEach(patch => node.RemoveChild(patch));
+            }
             node.AppendChild(GeneratePatchNode(doc, options));
             doc.Save(options.XmlSave ?? options.Xml);
             Console.WriteLine("XML Saved to file: " + (options.XmlSave ?? options.Xml));
+        }
+
+        public static bool CheckVersionExists(XmlDocument doc, string version)
+        {
+            return doc.GetElementsByTagName("version").Cast<XmlNode>().Any(ver => ver.InnerText == version);
         }
 
         public static XmlNode GeneratePatchNode(XmlDocument doc, Options options)
