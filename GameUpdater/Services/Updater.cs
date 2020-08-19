@@ -38,7 +38,7 @@ namespace GameUpdater.Services
                 {
                     _xmlLocal.Load(_localManifest);
                 }
-                catch(Exception e)
+                catch
                 {
                     _xmlLocal.InnerXml = "<updater><version>0.0.0</version></updater>";
                 }
