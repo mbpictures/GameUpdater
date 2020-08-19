@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
@@ -161,6 +161,7 @@ namespace ManifestTool
             var files = doc.GetElementsByTagName("files")[0];
             foreach (var file in Directory.GetFiles(directoryPath, "*.*", SearchOption.AllDirectories))
             {
+                if(file.EndsWith(".checksum.xml")) continue;
                 var node = doc.CreateNode(XmlNodeType.Element, "file", "");
                 var filename = doc.CreateNode(XmlNodeType.Element, "filename", "");
                 filename.InnerText = Path.GetRelativePath(directoryPath, file);
