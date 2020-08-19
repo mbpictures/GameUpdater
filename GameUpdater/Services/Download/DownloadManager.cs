@@ -129,7 +129,10 @@ namespace GameUpdater.Services.Download
             _totalDownloadedAmount += _downloadedAmount;
             if (_currentFile.ZIP)
             {
-                ZipFile.ExtractToDirectory(_currentFile.FileName, IniLoader.Instance.Read("GameDirectory", "General"));
+                ZipFile.ExtractToDirectory(
+                    _currentFile.FileName,
+                    IniLoader.Instance.Read("GameDirectory", "General"),
+                    true);
                 File.Delete(_currentFile.FileName);
             }
             _downloading = false;
