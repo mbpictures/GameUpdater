@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
@@ -174,7 +174,7 @@ namespace ManifestTool
                 if (options.GenerateSha1.HasValue && options.GenerateSha1.Value)
                 {
                     var sha1 = doc.CreateNode(XmlNodeType.Element, "sha1", "");
-                    sha1.InnerText = GetMd5FromFile(file);
+                    sha1.InnerText = GetSha1FromFile(file);
                     node.AppendChild(sha1);
                 }
 
