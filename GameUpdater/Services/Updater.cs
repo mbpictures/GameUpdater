@@ -34,7 +34,14 @@ namespace GameUpdater.Services
             {
                 if (_xmlLocal != null) return _xmlLocal;
                 _xmlLocal = new XmlDocument();
-                _xmlLocal.Load(_localManifest);
+                try
+                {
+                    _xmlLocal.Load(_localManifest);
+                }
+                catch(Exception e)
+                {
+                    _xmlLocal.InnerXml = "<updater><version>0.0.0</version></updater>";
+                }
 
                 return _xmlLocal;
             }
