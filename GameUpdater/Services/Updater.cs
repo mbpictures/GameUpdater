@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Xml;
 using GameUpdater.Services.Download;
 
@@ -65,6 +66,8 @@ namespace GameUpdater.Services
         {
             _localManifest = localManifest;
             _remoteManifest = remoteManifest;
+            if (!Directory.Exists(IniLoader.Instance.Read("GameDirectory", "General")))
+                Directory.CreateDirectory(IniLoader.Instance.Read("GameDirectory", "General"));
         }
 
         public void StartDownload(bool fileChecking = true)
