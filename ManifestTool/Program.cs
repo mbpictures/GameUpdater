@@ -154,10 +154,10 @@ namespace ManifestTool
 
         private static void GenerateChecksumFile(string directoryPath, Options options, string zipFileName)
         {
-            var doc = new XmlDocument {InnerXml = "<checksums><url></url><version></version><filename></filename><files></files></checksums>"};
+            var doc = new XmlDocument {InnerXml = "<checksums><url></url><version></version><zipFilename></zipFilename><files></files></checksums>"};
             doc.GetElementsByTagName("url")[0].InnerText = Path.Combine(options.Url, zipFileName);
             doc.GetElementsByTagName("version")[0].InnerText = options.Version;
-            doc.GetElementsByTagName("filename")[0].InnerText = zipFileName;
+            doc.GetElementsByTagName("zipFilename")[0].InnerText = zipFileName;
             var files = doc.GetElementsByTagName("files")[0];
             foreach (var file in Directory.GetFiles(directoryPath, "*.*", SearchOption.AllDirectories))
             {
