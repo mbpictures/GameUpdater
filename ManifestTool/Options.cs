@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Linq;
 using CommandLine;
 using CommandLine.Text;
 
@@ -31,18 +33,32 @@ namespace ManifestTool
         
         [Option("zip", HelpText = "Zip all files inside a single patch file and create and create a file, which contains all checksums (if enabled)", Required = false, Default = false)]
         public bool? Zip { get; set; }
-        public static string GetUsage<T>(ParserResult<T> result)
+
+        public static string GetUsage<T>(ParserResult<T> result, IEnumerable<Error> errors)
         {
-            return HelpText.AutoBuild(result, h =>
+            var sentenceBuilder = SentenceBuilder.Create();
+            var output = "";
+
+            var errorList = errors.ToList();
+            if (errorList.ToArray().Length > 0 && !(errorList.ToList().Count == 1 && errorList.ToList()[0].Tag == ErrorType.HelpRequestedError))
+            {
+                output += "Errors:\n";
+                output = errorList.Aggregate(output, (current, error) => current + $"{sentenceBuilder.FormatError(error)}\n");
+                output += "Usage: \n\n";
+            }
+
+            output += HelpText.AutoBuild(result, h =>
                 {
                     h.AdditionalNewLineAfterOption = false;
                     h.Heading = "ManifestTool";
                     h.Copyright = "Copyright (c) 2020 Marius Butz";
                     h.AddDashesToOption = true;
                     return h;
-                }, 
+                },
                 e => e,
-                verbsIndex:true).ToString();  //set verbsIndex to display verb help summary.
+                verbsIndex: true).ToString(); //set verbsIndex to display verb help summary.
+
+            return output;
         }
     }
 }

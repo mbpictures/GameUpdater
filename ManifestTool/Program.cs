@@ -17,7 +17,7 @@ namespace ManifestTool
             var parserResult = parser.ParseArguments<Options>(args);
             parserResult
                 .WithParsed(Run)
-                .WithNotParsed(errs => Console.WriteLine(Options.GetUsage(parserResult)));
+                .WithNotParsed(errs => Console.WriteLine(Options.GetUsage(parserResult, errs)));
         }
 
         private static void Run(Options options)
