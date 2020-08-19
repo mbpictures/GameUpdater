@@ -3,25 +3,24 @@ using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
-using System.Runtime;
 using System.Security.Cryptography;
 using System.Xml;
 using CommandLine;
 
 namespace ManifestTool
 {
-    class Program
+    internal static class Program
     {
         private static void Main(string[] args)
         {
             var parser = new Parser(with => with.HelpWriter = null);
             var parserResult = parser.ParseArguments<Options>(args);
             parserResult
-                .WithParsed(options => Run(options))
+                .WithParsed(Run)
                 .WithNotParsed(errs => Console.WriteLine(Options.GetUsage(parserResult)));
         }
 
-        public static void Run(Options options)
+        private static void Run(Options options)
         {
             var doc = new XmlDocument();
             doc.Load(options.Xml);
@@ -47,12 +46,12 @@ namespace ManifestTool
             Console.WriteLine("XML Saved to file: " + (options.XmlSave ?? options.Xml));
         }
 
-        public static bool CheckVersionExists(XmlDocument doc, string version)
+        private static bool CheckVersionExists(XmlDocument doc, string version)
         {
             return doc.GetElementsByTagName("version").Cast<XmlNode>().Any(ver => ver.InnerText == version);
         }
 
-        public static XmlNode GeneratePatchNode(XmlDocument doc, Options options)
+        private static XmlNode GeneratePatchNode(XmlDocument doc, Options options)
         {
             var node = doc.CreateNode(XmlNodeType.Element, "patch", "");
             var version = doc.CreateNode(XmlNodeType.Element, "version", "");
@@ -68,7 +67,7 @@ namespace ManifestTool
             return node;
         }
 
-        public static List<XmlNode> GenerateFileList(XmlDocument doc, Options options)
+        private static List<XmlNode> GenerateFileList(XmlDocument doc, Options options)
         {
             var nodeList = new List<XmlNode>();
             var files = new List<string>();
