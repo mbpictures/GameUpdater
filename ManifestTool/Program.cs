@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
@@ -35,6 +35,12 @@ namespace ManifestTool
                 doc.GetElementsByTagName("patch").Cast<XmlNode>().ToList()
                     .Where(patch => patch.SelectSingleNode("version").InnerText == options.Version).ToList()
                     .ForEach(patch => node.RemoveChild(patch));
+            }
+
+            if (!CheckVersionExists(doc, options.DependsOnVersion))
+            {
+                Console.WriteLine("The patch, on which this patch depends, doesn't exist!");
+                return;
             }
             node.AppendChild(GeneratePatchNode(doc, options));
             doc.Save(options.XmlSave ?? options.Xml);
