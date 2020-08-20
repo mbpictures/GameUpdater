@@ -33,19 +33,8 @@ namespace GameUpdater.Services
                 {
                     OnUpdateCurrentInfo?.Invoke(this, file.FileName);
                     if (file.ZIP) continue;
-                    var fileValid = true;
-                    if (!string.IsNullOrEmpty(file.MD5))
-                        fileValid &= _verifyMd5(file.FileName, file.MD5);
-                    if (!string.IsNullOrEmpty(file.SHA1))
-                        fileValid &= _verifySha1(file.FileName, file.SHA1);
 
-                    if (!fileValid)
-                    {
-                        temp.Add(file.FileName, file);
-                        continue;
-                    }
-
-                    temp.Remove(file.FileName);
+                    _checkFile(temp, file.FileName, file);
                 }
             }
             
@@ -72,22 +61,25 @@ namespace GameUpdater.Services
                     var md5 = file.SelectSingleNode("md5")?.InnerText;
                     var sha1 = file.SelectSingleNode("sha1")?.InnerText;
 
-                    var fileValid = true;
-
-                    if (!string.IsNullOrEmpty(md5)) 
-                        fileValid &= _verifyMd5(filename, md5);
-                    if (!string.IsNullOrEmpty(sha1)) 
-                        fileValid &= _verifySha1(filename, sha1);
-
-                    if (!fileValid)
-                    {
-                        dict.Add(filename, new DownloadFile(url, zipFilename, md5, sha1, true));
-                        continue;
-                    }
-
-                    dict.Remove(filename);
+                    _checkFile(dict, filename, new DownloadFile(url, zipFilename, md5!, sha1!, true));
                 }
             });
+        }
+
+        private static void _checkFile(Dictionary<string, DownloadFile> dict, string filename, DownloadFile file)
+        {
+            var fileValid = true;
+
+            if (!string.IsNullOrEmpty(file.MD5)) 
+                fileValid &= _verifyMd5(filename, file.MD5);
+            if (!string.IsNullOrEmpty(file.SHA1)) 
+                fileValid &= _verifySha1(filename, file.SHA1);
+
+            if (!fileValid)
+            {
+                dict.Add(filename, file);
+            }
+            dict.Remove(filename);
         }
 
         private static bool _verifyMd5(string filename, string expectedMd5)
