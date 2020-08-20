@@ -23,7 +23,15 @@ namespace ManifestTool
         private static void Run(Options options)
         {
             var doc = new XmlDocument();
-            doc.Load(options.Xml);
+            try
+            {
+                doc.Load(options.Xml);
+            }
+            catch
+            {
+                doc.InnerXml = "<updater><version>0.0.0</version><patches></patches></updater>";
+            }
+
             var node = doc.GetElementsByTagName("patches")[0];
             if (CheckVersionExists(doc, options.Version))
             {
