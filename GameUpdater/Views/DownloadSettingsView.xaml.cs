@@ -1,6 +1,8 @@
 using System;
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
+using GameUpdater.Services;
+using GameUpdater.Services.Download;
 using GameUpdater.ViewModels;
 using ReactiveUI;
 
@@ -20,6 +22,7 @@ namespace GameUpdater.Views
             AvaloniaXamlLoader.Load(this);
             _speedSlider = this.FindControl<Slider>("SpeedSlider");
             _speedText = this.FindControl<TextBlock>("SpeedText");
+            _speedSlider.Value = Convert.ToDouble(IniLoader.Instance.Read("MaxBytesPerSecond", "Settings"));
             _speedSlider.WhenAnyValue(x => x.Value).Subscribe(_onSpeedSliderChange);
         }
 
@@ -27,12 +30,12 @@ namespace GameUpdater.Views
         {
             _speedText.Text = _formatDownloadSpeed(value, _speedSlider.Maximum);
             ((DownloadSettingsViewModel) DataContext)?.SetMaxBytesPerSecond(
-                Convert.ToInt64(GetRealBytesPerSecondsFromValue(value,_speedSlider.Maximum)));
+                Convert.ToInt64(GetRealBytesPerSecondsFromValue(value,_speedSlider.Maximum)), value);
         }
 
         public static double GetRealBytesPerSecondsFromValue(double value, double max)
         {
-            return Math.Abs(value - max) < 0.001 ? 0 : (-Math.Pow(Math.E, (-value + 1500) * 0.01) + 3270000) * 10;
+            return Math.Abs(value - max) < 0.001 ? ThrottledStream.Infinite : (-Math.Pow(Math.E, (-value + 1500) * 0.01) + 3270000) * 10;
         }
 
         private static string _formatDownloadSpeed(double value, double max)

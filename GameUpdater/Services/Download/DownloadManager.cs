@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.IO;
 using System.IO.Compression;
 using System.Net;
+using GameUpdater.Views;
 
 namespace GameUpdater.Services.Download
 {
@@ -113,6 +114,8 @@ namespace GameUpdater.Services.Download
             else
                 Directory.CreateDirectory(Path.GetDirectoryName(filePath));
             _fd = new FileDownloader(_currentFile.URL, _currentFile.FileName);
+            _fd.MaxBytesPerSecond = Convert.ToInt64(DownloadSettingsView.GetRealBytesPerSecondsFromValue(
+                Convert.ToDouble(IniLoader.Instance.Read("MaxBytesPerSecond", "Settings")), 100));
             _fd.OnProgress += _downloadProgressChanged;
             _fd.OnFinish += _downloadComplete;
             _fd.Start();

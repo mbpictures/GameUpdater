@@ -14,9 +14,11 @@ namespace GameUpdater.ViewModels
             Context = this;
         }
 
-        public void SetMaxBytesPerSecond(long bytesPerSecond)
+        public void SetMaxBytesPerSecond(long bytesPerSecond, double sliderValue)
         {
             _updater.SetMaxBytesPerSecond(bytesPerSecond);
+            IniLoader.Instance.AddSetting("Settings", "MaxBytesPerSecond", $"{sliderValue}");
+            IniLoader.Instance.SaveSettings();
         }
 
         public void CloseDownloadSettings()
