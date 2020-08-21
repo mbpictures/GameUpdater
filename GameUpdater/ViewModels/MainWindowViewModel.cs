@@ -1,4 +1,5 @@
-﻿using GameUpdater.Services;
+﻿using System;
+using GameUpdater.Services;
 using ReactiveUI;
 
 namespace GameUpdater.ViewModels
@@ -32,6 +33,8 @@ namespace GameUpdater.ViewModels
         private void _onPatchFinished(object sender)
         {
             Content = new StartGameViewModel();
+            if(Convert.ToBoolean(IniLoader.Instance.Read("AutoStartGame", "Settings")))
+                ((StartGameViewModel) Content).StartGame();
         }
 
         private ViewModelBase _content;

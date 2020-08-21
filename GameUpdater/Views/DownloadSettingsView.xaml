@@ -12,6 +12,8 @@
                 <TextBlock Margin="5" Text="Max Download Speed" Foreground="#FF000000" FontSize="20" />
                 <Slider Value="100" Minimum="1" Maximum="100" MinWidth="200" MinHeight="30" IsSnapToTickEnabled="True" Name="SpeedSlider" />
                 <TextBlock Text="" Foreground="#FF000000" HorizontalAlignment="Center" Name="SpeedText"/>
+                <TextBlock Text="Auto start game when patch finished?" Foreground="#FF000000" Margin="0,10,0,0" />
+                <CheckBox Name="AutoStartCheckbox" HorizontalAlignment="Center"></CheckBox>
             </StackPanel>
         </Border>
     </Grid>

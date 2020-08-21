@@ -12,6 +12,7 @@ namespace GameUpdater.Views
     {
         private Slider _speedSlider;
         private TextBlock _speedText;
+        private CheckBox _autoStartCheckbox;
         public DownloadSettingsView()
         {
             InitializeComponent();
@@ -24,6 +25,10 @@ namespace GameUpdater.Views
             _speedText = this.FindControl<TextBlock>("SpeedText");
             _speedSlider.Value = Convert.ToDouble(IniLoader.Instance.Read("MaxBytesPerSecond", "Settings"));
             _speedSlider.WhenAnyValue(x => x.Value).Subscribe(_onSpeedSliderChange);
+
+            _autoStartCheckbox = this.FindControl<CheckBox>("AutoStartCheckbox");
+            _autoStartCheckbox.IsChecked = Convert.ToBoolean(IniLoader.Instance.Read("AutoStartGame", "Settings"));
+            _autoStartCheckbox.WhenAnyValue(x => x.IsChecked).Subscribe(_onAutoStartCheckboxChange);
         }
 
         private void _onSpeedSliderChange(double value)
@@ -31,6 +36,12 @@ namespace GameUpdater.Views
             _speedText.Text = _formatDownloadSpeed(value, _speedSlider.Maximum);
             ((DownloadSettingsViewModel) DataContext)?.SetMaxBytesPerSecond(
                 Convert.ToInt64(GetRealBytesPerSecondsFromValue(value,_speedSlider.Maximum)), value);
+        }
+
+        private static void _onAutoStartCheckboxChange(bool? isChecked)
+        {
+            IniLoader.Instance.AddSetting("Settings", "AutoStartGame", isChecked.ToString());
+            IniLoader.Instance.SaveSettings();
         }
 
         public static double GetRealBytesPerSecondsFromValue(double value, double max)
