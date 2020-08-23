@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi"
+     xmlns:bal="http://schemas.microsoft.com/wix/BalExtension">
+  <!-- CHANGE THESE VALUES -->
+  <?define ProductName = "GameLauncher" ?> 
+  <?define ProductVersion = "1.0.0.0" ?>
+  <?define LicenseURL = "http://www.marius-butz.de" ?>
+  
+  
+	<Bundle Name="$(var.ProductName)" Version="$(var.ProductVersion)" Manufacturer="Marius Butz" UpgradeCode="314448a5-46a5-4f23-a6bf-332f5c10064b"
+          IconSourceFile="$(var.GameUpdater.ProjectDir)\Assets\logo.ico">
+
+    <!-- Variable to set default checkbox value -->
+    <Variable Name="AddDesktopShortcut" Type="numeric" Value="1" />
+    <!-- Variable to pass value to msi-->
+    <Variable Name="AddDesktopShortcutMsiVariable" bal:Overridable="yes" Value="[AddDesktopShortcut]" />
+
+    <Variable Name="BundleName" Value="$(var.ProductName)"/>
+    <Variable Name="BundleVersion" Value="$(var.ProductVersion)"/>
+
+    <BootstrapperApplicationRef Id="WixStandardBootstrapperApplication.HyperlinkLicense">
+      <bal:WixStandardBootstrapperApplication
+        LogoFile="res/logo.jpg"
+        LicenseUrl="$(var.LicenseURL)"
+        ThemeFile="res/BootstrapperTheme.xml"
+        LocalizationFile="res/BootstrapperTheme.wxl" />
+    </BootstrapperApplicationRef>
+
+		<Chain>
+      <MsiPackage Id="Setup" SourceFile="$(var.GameUpdater.Installer.TargetPath)" Compressed="yes">
+        <MsiProperty Name="AddDesktopShortcut" Value="[AddDesktopShortcutMsiVariable]" />
+      </MsiPackage>
+		</Chain>
+	</Bundle>
+</Wix>

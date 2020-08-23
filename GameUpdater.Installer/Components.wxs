@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+
+  <Fragment>
+    <ComponentGroup Id="ProductComponents">
+      <ComponentRef Id="LauncherFile" />
+      <ComponentRef Id="LauncherConfigFile" />
+    </ComponentGroup>
+
+    <DirectoryRef Id="INSTALLFOLDER" FileSource="..\GameUpdater\bin\Release\netcoreapp3.1\win-$(var.Platform)\publish\">
+      <Component Id="LauncherFile" Guid="{FEAF502E-B57A-45C2-81F7-08F1355F8B9C}">
+        <File Id="LauncherFileRef" Name="GameUpdater.exe" KeyPath="yes" />
+        <RemoveFolder Id="RemoveStartMenu" Directory="InstallProgramMenuFolder" On="uninstall" />
+      </Component>
+    </DirectoryRef>
+    <DirectoryRef Id="INSTALLFOLDER" FileSource="..\GameUpdater\">
+      <Component Id="LauncherConfigFile" Guid="{C2DFDD21-D815-4B4F-BC4D-433B31F26545}">
+        <File Id="LauncherConfigFileRef" Name="GameUpdater.ini" KeyPath="yes" />
+      </Component>
+    </DirectoryRef>
+  </Fragment>
+</Wix>
