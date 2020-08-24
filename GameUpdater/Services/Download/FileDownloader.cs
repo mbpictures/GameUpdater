@@ -101,7 +101,11 @@ namespace GameUpdater.Services.Download
                 {
                     var bytesRead = _responseStream.Read(buffer, 0, buffer.Length);
 
-                    if (bytesRead == 0) break;
+                    if (bytesRead == 0)
+                    {
+                        OnFinish?.Invoke(this);
+                        break;
+                    }
 
                     await fs.WriteAsync(buffer, 0, bytesRead);
                     BytesWritten += bytesRead;
@@ -117,10 +121,7 @@ namespace GameUpdater.Services.Download
         public Task Start()
         {
             _allowedToRun = true;
-            return Start(BytesWritten).ContinueWith(task =>
-            {
-                OnFinish?.Invoke(this);
-            });
+            return Start(BytesWritten);
         }
 
         public void Pause()
