@@ -115,7 +115,7 @@ namespace GameUpdater.Services.Download
                 Directory.CreateDirectory(Path.GetDirectoryName(filePath));
             _fd = new FileDownloader(_currentFile.URL, _currentFile.FileName);
             _fd.MaxBytesPerSecond = Convert.ToInt64(DownloadSettingsView.GetRealBytesPerSecondsFromValue(
-                Convert.ToDouble(IniLoader.Instance.Read("MaxBytesPerSecond", "Settings")), 100));
+                Convert.ToDouble(IniLoader.Instance.Read("MaxBytesPerSecond", "Settings") ?? "100.0"), 100));
             _fd.OnProgress += _downloadProgressChanged;
             _fd.OnFinish += _downloadComplete;
             _fd.Start();

@@ -23,7 +23,7 @@ namespace GameUpdater.Views
             AvaloniaXamlLoader.Load(this);
             _speedSlider = this.FindControl<Slider>("SpeedSlider");
             _speedText = this.FindControl<TextBlock>("SpeedText");
-            _speedSlider.Value = Convert.ToDouble(IniLoader.Instance.Read("MaxBytesPerSecond", "Settings"));
+            _speedSlider.Value = Convert.ToDouble(IniLoader.Instance.Read("MaxBytesPerSecond", "Settings") ?? $"{_speedSlider.Maximum}");
             _speedSlider.WhenAnyValue(x => x.Value).Subscribe(_onSpeedSliderChange);
 
             _autoStartCheckbox = this.FindControl<CheckBox>("AutoStartCheckbox");
