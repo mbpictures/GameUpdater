@@ -31,7 +31,7 @@
 
     <Icon Id="Icon.ico" SourceFile="$(var.GameUpdater.ProjectDir)\Assets\logo.ico"/>
     
-    <Property Id="APPPRODUCTICON">icon.ico</Property>
+    <Property Id="APPPRODUCTICON">Icon.ico</Property>
     <Property Id="APPURLINFOABOUT">http://marius-butz.de</Property> <!-- REPLACE WITH YOUR WEBSITE! -->
 
     <!-- WIX UI -->
