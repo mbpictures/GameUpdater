@@ -2,7 +2,6 @@ using System;
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 using GameUpdater.Services;
-using GameUpdater.Services.Download;
 using GameUpdater.ViewModels;
 using ReactiveUI;
 
@@ -35,7 +34,7 @@ namespace GameUpdater.Views
         {
             _speedText.Text = _formatDownloadSpeed(value, _speedSlider.Maximum);
             ((DownloadSettingsViewModel) DataContext)?.SetMaxBytesPerSecond(
-                Convert.ToInt64(GetRealBytesPerSecondsFromValue(value,_speedSlider.Maximum)), value);
+                Convert.ToInt64(Util.GetRealBytesPerSecondsFromValue(value,_speedSlider.Maximum)), value);
         }
 
         private static void _onAutoStartCheckboxChange(bool? isChecked)
@@ -44,26 +43,9 @@ namespace GameUpdater.Views
             IniLoader.Instance.SaveSettings();
         }
 
-        public static double GetRealBytesPerSecondsFromValue(double value, double max)
-        {
-            return Math.Abs(value - max) < 0.001 ? ThrottledStream.Infinite : (-Math.Pow(Math.E, (-value + 1500) * 0.01) + 3270000) * 10;
-        }
-
         private static string _formatDownloadSpeed(double value, double max)
         {
-            var isInfinite = Math.Abs(value - max) < 0.001;
-            value = GetRealBytesPerSecondsFromValue(value, max);
-            string[] sizes = { "B/s", "KB/s", "MB/s", "GB/s", "TB/s" };
-            var order = 0;
-            while (value >= 1024 && order < sizes.Length - 1) {
-                order++;
-                value /= 1024;
-            }
-
-            value = Math.Round(value);
-            
-            var speedText = isInfinite ? "Infinite" : $"{value} {sizes[order]}";
-            return $"Speed: {speedText}";
+            return $"Speed: {Util.FormatDownloadSpeed(Util.GetRealBytesPerSecondsFromValue(value, max), Math.Abs(value - max) < 0.001)}";
         }
     }
 }
