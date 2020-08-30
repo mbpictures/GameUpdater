@@ -52,7 +52,7 @@ namespace GameUpdater.ViewModels
             var downloadedAmount = Convert.ToDouble(_updater.DownloadedAmount);
             var downloadedAmountUnit = Util.FormatBytes(ref downloadedAmount);
             downloadedAmount = Math.Round(downloadedAmount, 2);
-            ProgressText = $"{downloadedAmount} {downloadedAmountUnit}/{downloadAmount} {downloadAmountUnit}";
+            ProgressText = $"{downloadedAmount:F} {downloadedAmountUnit}/{downloadAmount:F} {downloadAmountUnit}";
         }
 
         private int _progress;
