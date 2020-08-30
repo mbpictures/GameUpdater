@@ -1,3 +1,4 @@
+using System;
 using GameUpdater.Services;
 using ReactiveUI;
 
@@ -44,7 +45,14 @@ namespace GameUpdater.ViewModels
         private void _onProgressChanged(object sender, int progress)
         {
             Progress = progress;
-            ProgressText = $"{progress}%";
+            long downloadAmountLong = _updater.TotalDownloadAmount;
+            var downloadAmount = Convert.ToDouble(downloadAmountLong);
+            var downloadAmountUnit = Util.FormatBytes(ref downloadAmount);
+            downloadAmount = Math.Round(downloadAmount, 2);
+            var downloadedAmount = Convert.ToDouble(_updater.DownloadedAmount);
+            var downloadedAmountUnit = Util.FormatBytes(ref downloadedAmount);
+            downloadedAmount = Math.Round(downloadedAmount, 2);
+            ProgressText = $"{downloadedAmount} {downloadedAmountUnit}/{downloadAmount} {downloadAmountUnit}";
         }
 
         private int _progress;
