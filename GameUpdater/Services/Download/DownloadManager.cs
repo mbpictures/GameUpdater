@@ -16,7 +16,10 @@ namespace GameUpdater.Services.Download
         private FileDownloader _fd;
         private long _downloadedAmount;
         private long _totalDownloadedAmount;
-        private long _totalAmountToDownload;
+        public long TotalAmountToDownload { get; private set; }
+
+        public long TotalDownloadedAmount => _totalDownloadedAmount + _downloadedAmount;
+
         private DownloadFile _currentFile;
 
         public delegate void ProgressChangedHandler(object sender, int progress);
@@ -32,7 +35,7 @@ namespace GameUpdater.Services.Download
         public DownloadManager(Queue<DownloadFile> files, long totalAmountToDownload)
         {
             _files = files;
-            _totalAmountToDownload = totalAmountToDownload;
+            TotalAmountToDownload = totalAmountToDownload;
         }
 
         public void StartDownload()
@@ -45,14 +48,14 @@ namespace GameUpdater.Services.Download
             _worker.DoWork += _workerDoWork;
             _worker.ProgressChanged += _workerProgressChanged;
             _worker.RunWorkerCompleted += _workerCompleted;
-            _totalAmountToDownload = 0;
+            TotalAmountToDownload = 0;
             
             var tempClient = new WebClient();
 
             foreach (var file in _files)
             {
                 tempClient.OpenRead(file.URL);
-                _totalAmountToDownload += Convert.ToInt64(tempClient.ResponseHeaders["Content-Length"]);
+                TotalAmountToDownload += Convert.ToInt64(tempClient.ResponseHeaders["Content-Length"]);
             }
 
             _worker.RunWorkerAsync();
@@ -124,7 +127,7 @@ namespace GameUpdater.Services.Download
         private void _downloadProgressChanged(object sender, long bytesReceived)
         {
             _downloadedAmount = bytesReceived;
-            var progress = (int) ((_totalDownloadedAmount + _downloadedAmount) / (double) _totalAmountToDownload * 100);
+            var progress = (int) ((_totalDownloadedAmount + _downloadedAmount) / (double) TotalAmountToDownload * 100);
             OnProgressChanged?.Invoke(this, progress);
         }
         private void _downloadComplete(object sender)

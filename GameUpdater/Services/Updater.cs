@@ -62,6 +62,9 @@ namespace GameUpdater.Services
             }
         }
 
+        public long TotalDownloadAmount => _currentDownloader.TotalAmountToDownload;
+        public long DownloadedAmount => _currentDownloader.TotalDownloadedAmount;
+
         public Updater(string localManifest, string remoteManifest)
         {
             _localManifest = localManifest;
