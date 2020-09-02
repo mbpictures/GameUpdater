@@ -1,5 +1,7 @@
 # GameUpdater Bootstrapper
 This project ads the wix bootstrapper pipeline to enable install chains and burn UI. This installer depends on the [GameUpdater.Installer](GameUpdater.Installer) project, but builds the corresponding installer file automatically.
+
+![Screenshot](http://projects.marius-butz.de/updater/ScreenshotInstaller1.png)
 ## Usage
 1. Clone the repository
 2. Publish/build the GameUpdater project ([see](GameUpdater/README.md))
