@@ -29,7 +29,7 @@ namespace ManifestTool
             }
             catch
             {
-                doc.InnerXml = "<updater><version>0.0.0</version><patches></patches></updater>";
+                doc.InnerXml = $"<updater><version>{options.Version}</version><patches></patches></updater>";
             }
 
             var node = doc.GetElementsByTagName("patches")[0];
@@ -44,7 +44,7 @@ namespace ManifestTool
                     .ForEach(patch => node.RemoveChild(patch));
             }
 
-            if (!CheckVersionExists(doc, options.DependsOnVersion))
+            if (!string.IsNullOrEmpty(options.DependsOnVersion) && !CheckVersionExists(doc, options.DependsOnVersion) && node.HasChildNodes)
             {
                 Console.WriteLine("The patch, on which this patch depends, doesn't exist!");
                 return;
@@ -56,7 +56,7 @@ namespace ManifestTool
 
         private static bool CheckVersionExists(XmlDocument doc, string version)
         {
-            return doc.GetElementsByTagName("version").Cast<XmlNode>().Any(ver => ver.InnerText == version);
+            return doc.SelectNodes("/updater/patches/patch/version")?.Cast<XmlNode>().Any(ver => ver.InnerText == version) ?? false;
         }
 
         private static XmlNode GeneratePatchNode(XmlDocument doc, Options options)
@@ -64,10 +64,13 @@ namespace ManifestTool
             var node = doc.CreateNode(XmlNodeType.Element, "patch", "");
             var version = doc.CreateNode(XmlNodeType.Element, "version", "");
             version.InnerText = options.Version;
-            var dependsOn = doc.CreateNode(XmlNodeType.Element, "dependsOn", "");
-            dependsOn.InnerText = options.DependsOnVersion;
+            if (!string.IsNullOrEmpty(options.DependsOnVersion))
+            {
+                var dependsOn = doc.CreateNode(XmlNodeType.Element, "dependsOn", "");
+                dependsOn.InnerText = options.DependsOnVersion;
+                node.AppendChild(dependsOn);
+            }
             node.AppendChild(version);
-            node.AppendChild(dependsOn);
 
             var files = doc.CreateNode(XmlNodeType.Element, "files", "");
             GenerateFileList(doc, options).ForEach(file => files.AppendChild(file));

@@ -13,7 +13,7 @@ namespace ManifestTool
         [Option('v', "version", HelpText = "Version of the patch", Required = true)]
         public string Version { get; set; }
         
-        [Option('d', "depends-on", HelpText = "Version on which this patch depends on", Required = true)]
+        [Option('d', "depends-on", HelpText = "Version on which this patch depends on", Required = false)]
         public string DependsOnVersion { get; set; }
         
         [Option('u', "url", HelpText = "URL of the top level folder which contains all files relative to it", Required = true)]
