@@ -68,7 +68,7 @@ namespace GameUpdater.Services
 
         private static void _checkFile(Dictionary<string, DownloadFile> dict, string filename, DownloadFile file)
         {
-            var fileValid = true;
+            var fileValid = File.Exists(filename);
 
             if (!string.IsNullOrEmpty(file.MD5)) 
                 fileValid &= _verifyMd5(filename, file.MD5);
