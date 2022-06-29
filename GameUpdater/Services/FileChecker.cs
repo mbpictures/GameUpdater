@@ -79,7 +79,10 @@ namespace GameUpdater.Services
             {
                 dict.Add(filename, file);
             }
-            dict.Remove(filename);
+            else
+            {
+                dict.Remove(filename); // remove file in case of a file got updated in a later patch and is valid again
+            }
         }
 
         private static bool _verifyMd5(string filename, string expectedMd5)
