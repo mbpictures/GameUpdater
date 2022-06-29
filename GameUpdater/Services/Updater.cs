@@ -222,7 +222,7 @@ namespace GameUpdater.Services
                 {
                     Version = _getVersionOfNode(node),
                     Files = new Queue<DownloadFile>(),
-                    DependsOn = node.SelectSingleNode("dependsOn").InnerText
+                    DependsOn = node.SelectSingleNode("dependsOn")?.InnerText
                 };
 
                 foreach (XmlNode file in node.SelectSingleNode("files").SelectNodes("file"))
