@@ -71,7 +71,7 @@ namespace GameUpdater.Services.Download
 
         private long GetContentLength()
         {
-            var request = (HttpWebRequest) WebRequest.Create(_sourceUrl);
+            var request = WebRequest.Create(_sourceUrl);
             request.Method = "HEAD";
 
             using var response = request.GetResponse();
