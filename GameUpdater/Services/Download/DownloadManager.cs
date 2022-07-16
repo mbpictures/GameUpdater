@@ -52,10 +52,17 @@ namespace GameUpdater.Services.Download
             
             var tempClient = new WebClient();
 
-            foreach (var file in _files)
+            try
             {
-                tempClient.OpenRead(file.URL);
-                TotalAmountToDownload += Convert.ToInt64(tempClient.ResponseHeaders["Content-Length"]);
+                foreach (var file in _files)
+                {
+                    tempClient.OpenRead(file.URL);
+                    TotalAmountToDownload += Convert.ToInt64(tempClient.ResponseHeaders["Content-Length"]);
+                }
+            }
+            catch (WebException e)
+            {
+                OnError?.Invoke(this, "Unable to download file!");
             }
 
             _worker.RunWorkerAsync();

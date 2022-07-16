@@ -24,10 +24,12 @@ namespace GameUpdater.Services
         public delegate void PatchProgressHandler(object sender, int progress);
         public delegate void PatchChangedHandler(object sender, int currentPatch, int amountPatches);
         public delegate void PatchFinishedHandler(object sender);
+        public delegate void PatchErrorHandler(object sender, string error);
 
         public event PatchProgressHandler OnPatchProgress;
         public event PatchChangedHandler OnPatchChanged;
         public event PatchFinishedHandler OnPatchFinished;
+        public event PatchErrorHandler OnPatchError;
 
         public XmlDocument XmlLocal
         {
@@ -95,6 +97,7 @@ namespace GameUpdater.Services
             _currentDownloader = new DownloadManager(_currentPatch.Files, 0);
             _currentDownloader.OnDownloadComplete += _downloadPatchComplete;
             _currentDownloader.OnProgressChanged += _downloadPatchProgress;
+            _currentDownloader.OnError += (sender, error) => OnPatchError?.Invoke(sender, error);
             _currentDownloader.StartDownload();
         }
 

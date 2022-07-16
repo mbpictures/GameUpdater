@@ -1,6 +1,10 @@
 ﻿using System;
+using System.Threading.Tasks;
+using Avalonia;
+using Avalonia.Controls.ApplicationLifetimes;
 using GameUpdater.Services;
 using ReactiveUI;
+using GameUpdater.Views;
 
 namespace GameUpdater.ViewModels
 {
@@ -8,15 +12,26 @@ namespace GameUpdater.ViewModels
     {
         public MainWindowViewModel()
         {
+            var manageGame = new ManageGameViewModel(this);
+            BottomBar = manageGame;
+            PopupOpen = false;
             var updater = new Updater(
                 IniLoader.Instance.Read("LocalManifest", "General"),
                 IniLoader.Instance.Read("ServerManifest", "General"));
             Content = new DownloaderViewModel(this, updater);
             updater.OnPatchFinished += _onPatchFinished;
+            updater.OnPatchError += UpdaterOnPatchError;
             updater.StartDownload();
-            var manageGame = new ManageGameViewModel(this);
-            BottomBar = manageGame;
-            PopupOpen = false;
+        }
+
+        private async void UpdaterOnPatchError(object sender, string error)
+        {
+            await Task.Delay(2000);
+            if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+            {
+                await GameUpdaterMessageBox.Open(desktop.MainWindow, error + "\nPlease try again later!", "Error Downloading patch!", GameUpdaterMessageBox.MessageBoxButtons.Ok);
+                desktop.Shutdown();
+            }
         }
 
         public void OpenPopup(ViewModelBase content)

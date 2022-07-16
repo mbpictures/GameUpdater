@@ -1,7 +1,11 @@
 using System.Collections.Generic;
+using System.Threading.Tasks;
+using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.ApplicationLifetimes;
 using GameUpdater.Services;
 using GameUpdater.Services.Download;
+using GameUpdater.Views;
 using MessageBox.Avalonia.DTO;
 using MessageBox.Avalonia.Enums;
 using ReactiveUI;
@@ -31,7 +35,17 @@ namespace GameUpdater.ViewModels
             downloader.OnProgressChanged += _onProgressChanged;
             downloader.OnDownloadComplete += _onDownloadFinished;
             downloader.OnFileChanged += DownloaderOnFileChanged;
+            downloader.OnError += DownloaderOnOnError;
             downloader.StartDownload();
+        }
+
+        private async void DownloaderOnOnError(object sender, string error)
+        {
+            await Task.Delay(500);
+            if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+            {
+                await GameUpdaterMessageBox.Open(desktop.MainWindow, error + "\nPlease try again later!", "Error Downloading patch!", GameUpdaterMessageBox.MessageBoxButtons.Ok);
+            }
         }
 
         private void DownloaderOnFileChanged(object sender, string currentFile)
