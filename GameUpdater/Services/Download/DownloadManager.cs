@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.IO;
 using System.IO.Compression;
 using System.Net;
+using System.Threading;
 using GameUpdater.Views;
 
 namespace GameUpdater.Services.Download
@@ -31,6 +32,9 @@ namespace GameUpdater.Services.Download
         public event DownloadCompleteHandler OnDownloadComplete;
         public event ErrorHandler OnError;
         public event FileChangeHandler OnFileChanged;
+
+        private ManualResetEvent _pauseEvent = new ManualResetEvent(true); // Initially not paused
+
 
         public DownloadManager(Queue<DownloadFile> files, long totalAmountToDownload)
         {
@@ -76,6 +80,8 @@ namespace GameUpdater.Services.Download
         {
             while (_files.Count > 0 || _downloading)
             {
+                _pauseEvent.WaitOne();
+
                 if (_worker.CancellationPending)
                 {
                     //_wc.CancelAsync();
@@ -154,11 +160,13 @@ namespace GameUpdater.Services.Download
         public void PauseDownload()
         {
             _fd?.Pause();
+            _pauseEvent.Reset();
         }
 
         public void ResumeDownload()
         {
             _fd?.Start();
+            _pauseEvent.Set();
         }
 
         public void SetMaxBytesPerSecond(long maxBytesPerSecond)
