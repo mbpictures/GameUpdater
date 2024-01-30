@@ -9,7 +9,10 @@ namespace ManifestTool
     {
         [Option('f', "file", HelpText = "File or Folder to add to patch", Required = true)]
         public string File { get; set; }
-        
+
+        [Option('t', "target", HelpText = "客户端文件夹名字", Required = false, Default = "")]
+        public string TargetFolder { get; set; }
+
         [Option('v', "version", HelpText = "Version of the patch", Required = true)]
         public string Version { get; set; }
         

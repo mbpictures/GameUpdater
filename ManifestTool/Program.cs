@@ -35,9 +35,10 @@ namespace ManifestTool
             var node = doc.GetElementsByTagName("patches")[0];
             if (CheckVersionExists(doc, options.Version))
             {
-                Console.WriteLine("A patch with this version already exists! Should it be overriden? [y/n]");
+                Console.WriteLine("此版本号已存在，覆盖吗？ [y/n]");
                 var response = Console.ReadKey(false).Key;
                 if (response == ConsoleKey.N) return;
+                Console.WriteLine();
                 // search for all patches with the same version key as provided and remove them from the patch list
                 doc.GetElementsByTagName("patch").Cast<XmlNode>().ToList()
                     .Where(patch => patch.SelectSingleNode("version").InnerText == options.Version).ToList()
@@ -51,7 +52,7 @@ namespace ManifestTool
             }
             node.AppendChild(GeneratePatchNode(doc, options));
             doc.Save(options.XmlSave ?? options.Xml);
-            Console.WriteLine("XML Saved to file: " + (options.XmlSave ?? options.Xml));
+            Console.WriteLine("XML 已保存到: " + (options.XmlSave ?? options.Xml));
         }
 
         private static bool CheckVersionExists(XmlDocument doc, string version)
@@ -114,10 +115,32 @@ namespace ManifestTool
                     node.Attributes.Append(attribute);
                 }
 
+                Uri baseUri = new Uri(options.File + @"\");
+                Uri fileUri = new Uri(file);
+
+                Uri relativeUri = baseUri.MakeRelativeUri(fileUri);
+                string relativePath = Uri.UnescapeDataString(relativeUri.ToString()).Replace('/', '\\');
+
                 var url = doc.CreateNode(XmlNodeType.Element, "url", "");
-                url.InnerText = Path.Combine(options.Url, file);
+
+                if (!Uri.IsWellFormedUriString(options.Url, UriKind.Absolute))
+                {
+                    url.InnerText = Path.Combine(options.Url, file);
+                }
+                else
+                {
+                    url.InnerText = CombineURLWithFilePath(options.Url, relativePath);
+                }
+
+
+                if (!string.IsNullOrWhiteSpace(options.TargetFolder))
+                {
+                    relativePath = options.TargetFolder + "\\" + relativePath;
+                }
+
                 var location = doc.CreateNode(XmlNodeType.Element, "location", "");
-                location.InnerText = file;
+                //location.InnerText = file;
+                location.InnerText = relativePath;
 
                 if ((options.GenerateMd5.HasValue && options.GenerateMd5.Value) || (options.GenerateSha1.HasValue && options.GenerateSha1.Value))
                 {
@@ -193,6 +216,28 @@ namespace ManifestTool
                 files.AppendChild(node);
             }
             doc.Save(Path.Combine(directoryPath, new DirectoryInfo(directoryPath).Name + ".checksum.xml"));
+        }
+
+        public static string CombineURLWithFilePath(string baseUrl, string filePath)
+        {
+            // Ensure the base URL does not end with a slash
+            string url = baseUrl.TrimEnd('/');
+
+            // Normalize the file path by replacing backslashes with forward slashes
+            string normalizedFilePath = filePath.Replace('\\', '/');
+
+            // Handle relative paths differently
+            if (!Path.IsPathRooted(filePath))
+            {
+                // For relative paths, append the entire path
+                return $"{url}/{normalizedFilePath}";
+            }
+            else
+            {
+                // For full paths, extract just the filename (and possibly subdirectories)
+                string relativePath = Path.GetFileName(filePath); // This might need adjustment to include subdirectories
+                return $"{url}/{relativePath}";
+            }
         }
     }
 }
