@@ -6,7 +6,7 @@
              x:Class="GameUpdater.Views.CheckFilesView">
         <Border Background="#FFFFFFFF" HorizontalAlignment="Center" VerticalAlignment="Center">
             <StackPanel Orientation="Vertical" Margin="20">
-                <TextBlock Margin="5" Text="Checking Files..." HorizontalAlignment="Center" Foreground="#FF000000" FontSize="30" />
+                <TextBlock Margin="5" Text="正在校验文件..." HorizontalAlignment="Center" Foreground="#FF000000" FontSize="30" />
                 <Grid>
                     <ProgressBar Value="{Binding Progress}" />
                     <TextBlock Text="{Binding ProgressText}" HorizontalAlignment="Center"></TextBlock>

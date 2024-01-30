@@ -7,7 +7,8 @@
              x:Class="GameUpdater.Views.OverviewView">
     
     <Grid RowDefinitions="*" ColumnDefinitions="*">
-        <Image Grid.Row="0" Grid.Column="0" Source="/Assets/LauncherWallpaper.jpg"></Image>
-        <TextBlock Grid.Row="0" Grid.Column="0" Text="GameLauncher" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="40" FontFamily="Roboto"></TextBlock>
+        <Image Grid.Row="0" Grid.Column="0" Height="800" Width="600" Stretch="UniformToFill" Source="/Assets/background.jpg"></Image>
+        <TextBlock Grid.Row="0" Grid.Column="0" Text="XX传奇3" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="60" FontFamily="Roboto"></TextBlock>
+        <TextBlock Grid.Row="0" Grid.Column="0" Margin="0,100,0,0" Text="启动器" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="26" FontFamily="Roboto"></TextBlock>
     </Grid>
 </UserControl>
